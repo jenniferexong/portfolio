@@ -2,60 +2,65 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-const scene = new THREE.Scene();
-const manager = new THREE.LoadingManager();
+class Scene {
+  // setup
+  constructor() {
+    this.scene = new THREE.Scene();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-const gltfLoader = new GLTFLoader(manager);
-let nibbles = "src/res/model/bunny.gltf";
-let nibblesModel;
-gltfLoader.load(
-  nibbles,
-  (gltf) => {
-    nibblesModel = gltf.scene.children.find(
-      (child) => child.name === "nibbles"
-    );
-    nibblesModel.scale.set(
-      nibblesModel.scale.x * 0.5,
-      nibblesModel.scale.y * 0.5,
-      nibblesModel.scale.z * 0.5
-    );
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    this.camera.position.z = 5;
+    this.camera.position.y = 2;
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+    });
+    this.renderer.setSize(width, height);
+    document.body.appendChild(this.renderer.domElement);
 
-    nibblesModel.position.y -= 1;
-    scene.add(nibblesModel);
-  },
-  (xhr) => {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-  },
-  (error) => {
-    console.log(error);
+    // set background
+    this.scene.background = new THREE.Color("skyblue");
+
+    // sun (natural light)
+    const ambient = new THREE.AmbientLight("gray");
+    const light = new THREE.PointLight("white", 1.5, 100);
+    light.position.set(-2, 50, 20);
+    this.scene.add(light);
+    this.scene.add(ambient);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.update();
+    this.loadModels();
   }
-);
 
-const width = window.innerWidth;
-const height = window.innerHeight;
+  loadModels() {
+    const models = {
+      world: { url: "src/res/model/world.gltf" },
+    };
 
-const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-camera.position.z = 5;
-const renderer = new THREE.WebGLRenderer({
-  antialias: true,
-});
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
+    {
+      const manager = new THREE.LoadingManager();
+      const loader = new GLTFLoader(this.manager);
+      for (const model of Object.values(models)) {
+        loader.load(model.url, (gltf) => {
+          model.gltf = gltf;
+          this.scene.add(gltf.scene);
+          // model = gltf.scene.children.find((child) => child.name === "nibbles")
+          // model.scale.set(model.scale.x * 1, ...., ...);
+        });
+      }
+    }
+  }
 
-scene.background = new THREE.Color("gray");
+  render = () => {
+    requestAnimationFrame(this.render);
+    this.update();
+    this.renderer.render(this.scene, this.camera);
+  };
 
-const ambient = new THREE.AmbientLight("#262626");
-const light = new THREE.PointLight("white", 1.5, 100);
-light.position.set(-1, 2, 3);
-scene.add(light);
-scene.add(ambient);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
-
-function render() {
-  requestAnimationFrame(render);
-  nibblesModel.rotation.z += 0.02;
-  renderer.render(scene, camera);
+  // update camera position and rotation
+  update = () => {};
 }
-render();
+
+const scene = new Scene();
+scene.render();
