@@ -3,8 +3,17 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 class Scene {
+  scene;
+  camera;
+  renderer;
+  controls;
+  mixer;
+  train;
+  clock;
+
   // setup
   constructor() {
+    this.clock = new THREE.Clock();
     this.scene = new THREE.Scene();
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -45,8 +54,13 @@ class Scene {
         loader.load(model.url, (gltf) => {
           model.gltf = gltf;
           this.scene.add(gltf.scene);
-          // model = gltf.scene.children.find((child) => child.name === "nibbles")
-          // model.scale.set(model.scale.x * 1, ...., ...);
+          this.train = gltf.scene.children.find(
+            (child) => child.name === "train"
+          );
+          this.mixer = new THREE.AnimationMixer(gltf.scene);
+          gltf.animations.forEach((clip) => {
+            this.mixer.clipAction(clip).play();
+          });
         });
       }
     }
@@ -59,7 +73,10 @@ class Scene {
   };
 
   // update camera position and rotation
-  update = () => {};
+  update = () => {
+    var delta = this.clock.getDelta();
+    if (this.mixer) this.mixer.update(delta);
+  };
 }
 
 const scene = new Scene();
