@@ -37,11 +37,11 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
 
 // set background
-scene.background = new THREE.Color("skyblue");
+scene.background = new THREE.Color("white");
 
 // sun (natural light)
-const hemisphere = new THREE.HemisphereLight("lightblue", 0x080820, 0.2);
-const sun = new THREE.PointLight(0xffa95c, 1);
+const hemisphere = new THREE.HemisphereLight("white", "#434343", 0.2);
+const sun = new THREE.PointLight("white", 1);
 sun.position.set(10, 20, 0);
 sun.castShadow = true;
 sun.shadow.bias = -0.0005;
@@ -104,6 +104,15 @@ for (const model of Object.values(models)) {
       mixer.clipAction(clip).play();
     });
   });
+}
+
+// window resize
+window.addEventListener("resize", onWindowResize, false);
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  render();
 }
 
 render();
