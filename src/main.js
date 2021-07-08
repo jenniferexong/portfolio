@@ -52,9 +52,21 @@ scene.add(sun);
 scene.add(hemisphere);
 
 const controls = new PointerLockControls(camera, renderer.domElement);
+const enterInstructions = document.getElementById("enter");
+const exitInstructions = document.getElementById("exit");
 
-renderer.domElement.addEventListener("click", function () {
+renderer.domElement.addEventListener("click", () => {
   controls.lock();
+});
+
+controls.addEventListener("lock", () => {
+  enterInstructions.style.display = "none";
+  exitInstructions.style.display = "block";
+});
+
+controls.addEventListener("unlock", () => {
+  enterInstructions.style.display = "block";
+  exitInstructions.style.display = "none";
 });
 
 const models = {
@@ -64,11 +76,7 @@ const models = {
 const manager = new THREE.LoadingManager();
 manager.onLoad = init;
 
-function init() {
-  // hide loading bar
-  //const loadingBar = document.querySelector("#loading");
-  //loadingBar.style.display = "none";
-}
+function init() {}
 
 const loader = new GLTFLoader(manager);
 var train;
