@@ -36,13 +36,21 @@ renderer.shadowMap.enabled = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
 
-// set background
-scene.background = new THREE.Color("white");
+// background and fog
+{
+  const skyColor = "#77cacf";
+  const near = 20;
+  const far = 50;
+  scene.fog = new THREE.Fog(skyColor, near, far);
+  scene.background = new THREE.Color(skyColor);
+}
 
 // sun (natural light)
-const hemisphere = new THREE.HemisphereLight("white", "#434343", 0.2);
-const sun = new THREE.PointLight("white", 1);
-sun.position.set(10, 20, 0);
+const hemisphere = new THREE.HemisphereLight("white", "black", 0.05);
+const ambient = new THREE.AmbientLight("white", 0.1);
+scene.add(ambient);
+const sun = new THREE.PointLight("#e8dba8", 1);
+sun.position.set(0, 10, 10);
 sun.castShadow = true;
 sun.shadow.bias = -0.0005;
 sun.shadow.mapSize.width = 1024 * 3;
