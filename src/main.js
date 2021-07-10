@@ -72,13 +72,13 @@ renderer.domElement.addEventListener("click", () => {
 });
 
 controls.addEventListener("lock", () => {
-  enterInstructions.style.display = "none";
-  exitInstructions.style.display = "block";
+  //enterInstructions.style.display = "none";
+  //exitInstructions.style.display = "block";
 });
 
 controls.addEventListener("unlock", () => {
-  enterInstructions.style.display = "block";
-  exitInstructions.style.display = "none";
+  //enterInstructions.style.display = "block";
+  //exitInstructions.style.display = "none";
 });
 
 const world = { url: "src/res/model/world.glb", gltf: undefined };
@@ -144,6 +144,24 @@ const stops = {
   education: 6.56,
   contact: 7.55,
 };
+
+// select stop buttons
+const buttons = document.getElementsByClassName("stopButtons");
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener("click", (e) => {
+    selectStop(e.target.id);
+  });
+}
+
+let currentStop = "aboutMe";
+function selectStop(stopName) {
+  // deselect previous button
+  document.getElementById(currentStop).classList.remove("selected");
+  currentStop = stopName;
+  document.getElementById(currentStop).classList.add("selected");
+  // select new button
+  console.log(stops[stopName]);
+}
 
 function update() {
   let delta = clock.getDelta();

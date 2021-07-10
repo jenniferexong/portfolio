@@ -12,13 +12,43 @@ body {
 
 .instructions {
   position: absolute;
-  z-index: 100;
+  z-index: 1;
   padding-left: 2em;
   padding-top: 1em;
   color: black;
 }
 
-#enter {
+.buttonsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  left: 1em;
+}
+
+.stopButtons {
+  font-weight: 600;
+  padding: 0.8em;
+  margin-top: 1em;
+  margin-left: 0.5em;
+  font-size: 1em;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.stopButtons:hover {
+  color: black;
+}
+
+.selected {
+  border: solid;
+  border-color: white;
+  color: white;
+}
+
+.selected:hover {
+  color: white;
 }
 
 #exit {
