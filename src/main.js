@@ -15,6 +15,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 5;
 camera.position.y = 2;
+camera.rotateY(1.4);
 
 // renderer
 const renderer = new THREE.WebGLRenderer({
@@ -92,8 +93,9 @@ loader.load(world.url, (gltf) => {
 });
 
 // initialize shadows, animations
-var mixer;
-var train;
+let mixer;
+let train;
+let trainAction;
 function init() {
   // cast and receive shadows
   world.gltf.scene.traverse((node) => {
@@ -107,9 +109,11 @@ function init() {
   mixer = new THREE.AnimationMixer(world.gltf.scene);
   const clips = world.gltf.animations;
   const trainClip = clips[0];
-  const trainAction = mixer.clipAction(trainClip);
+  trainAction = mixer.clipAction(trainClip);
+  trainAction.timeScale = 0;
   trainAction.play();
 
+  setupKeyControls();
   render();
 }
 
@@ -117,14 +121,88 @@ function render() {
   requestAnimationFrame(render);
 
   // update camera position and rotation
-  var delta = clock.getDelta();
-  if (mixer) mixer.update(delta / 3);
+  update();
+  renderer.render(scene, camera);
+}
+
+// arrow key controls (takes animationAction)
+const pressedKeys = {
+  up: false,
+  down: false,
+};
+
+const maxSpeed = 1.3;
+const deceleration = 0.8;
+let speed = 0;
+let acceleration = 0.8;
+
+const stops = {
+  aboutMe: 2.7,
+  bunnyGame: 4.1,
+  ribbleChat: 5.1,
+  workHistory: 5.85,
+  education: 6.56,
+  contact: 7.55,
+};
+
+function update() {
+  let delta = clock.getDelta();
+
+  // control movement of train with arrow keys
+  // accelerate forwards
+  if (pressedKeys.up) {
+    speed += acceleration * delta;
+    if (speed > maxSpeed) speed = maxSpeed;
+  }
+  // accelerate backwards
+  if (pressedKeys.down) {
+    speed -= acceleration * delta;
+    if (speed < -maxSpeed) speed = -maxSpeed;
+  }
+  // if none are pressed, decelerate towards a stop
+  // i.e. speed == 0
+  if (!pressedKeys.up && !pressedKeys.down) {
+    // currently moving forwards
+    if (speed > 0) {
+      speed -= deceleration * delta;
+      if (speed < 0) speed = 0;
+    } else if (speed < 0) {
+      // currently moving backwards
+      speed += deceleration * delta;
+      if (speed > 0) speed = 0;
+    }
+  }
+  console.log(trainAction.time);
+
+  trainAction.timeScale = speed;
+  if (mixer) mixer.update(delta);
 
   camera.position.set(
     train.position.x,
     train.position.y + 0.5,
     train.position.z
   );
+}
 
-  renderer.render(scene, camera);
+function setupKeyControls() {
+  document.onkeydown = (e) => {
+    // up arrow or w
+    if (e.key === "ArrowUp" || e.key === "w") {
+      pressedKeys.up = true;
+    }
+    // down arrow or s
+    if (e.key === "ArrowDown" || e.key === "s") {
+      pressedKeys.down = true;
+    }
+  };
+  document.onkeyup = (e) => {
+    // up arrow or w
+    if (e.key === "ArrowUp" || e.key === "w") {
+      pressedKeys.up = false;
+    }
+    // down arrow or s
+    if (e.key === "ArrowDown" || e.key === "s") {
+      pressedKeys.down = false;
+    }
+  };
 }
