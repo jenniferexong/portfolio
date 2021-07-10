@@ -131,66 +131,82 @@ const pressedKeys = {
   down: false,
 };
 
+const timeLength = 1;
+const stops = {
+  aboutMe: 1.65,
+  bunnyGame: 3.5,
+  ribbleChat: 4.95,
+  workHistory: 5.95,
+  education: 6.95,
+  contact: 8.19,
+};
+
 const maxSpeed = 1.3;
 const deceleration = 0.8;
 let speed = 0;
 let acceleration = 0.8;
-
-const stops = {
-  aboutMe: 2.7,
-  bunnyGame: 4.1,
-  ribbleChat: 5.1,
-  workHistory: 5.85,
-  education: 6.56,
-  contact: 7.55,
-};
+let distLeft = 0;
 
 // select stop buttons
 const buttons = document.getElementsByClassName("stopButtons");
-for (var i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener("click", (e) => {
+for (const button of buttons) {
+  button.addEventListener("click", (e) => {
     selectStop(e.target.id);
   });
 }
 
-let currentStop = "aboutMe";
+let targetStop = "aboutMe";
 function selectStop(stopName) {
   // deselect previous button
-  document.getElementById(currentStop).classList.remove("selected");
-  currentStop = stopName;
-  document.getElementById(currentStop).classList.add("selected");
-  // select new button
-  console.log(stops[stopName]);
+  document.getElementById(targetStop).classList.remove("selected");
+  targetStop = stopName;
+  document.getElementById(targetStop).classList.add("selected");
+
+  // move train to new stop
+  visitStop();
+}
+
+function visitStop() {
+  // length of the track in action.time steps
+  const circumference = 10.0;
+  // think of train track as a circle, where each stop is located
+  // at some point on the circumference.
+  // points on the circumference range from values in [0, length]
+
+  // find which direction is faster
+  let previousPos = trainAction.time;
+  let nextPos = stops[targetStop];
+  let diff = nextPos - previousPos;
+  let dir;
+  if (diff > 0) dir = 1;
+  else if (diff < 0) dir = -1;
+  else dir = 0;
+
+  // get shortest distance between current location and
+  // next stop's location
+  // (either anticlockwise or clockwise)
+  distLeft = Math.abs(diff);
+
+  // other direction is shorter
+  if (Math.abs(diff) > circumference / 2) {
+    dir *= -1;
+    distLeft = circumference - distLeft;
+  }
+  console.log(distLeft);
+
+  speed = dir * maxSpeed;
 }
 
 function update() {
   let delta = clock.getDelta();
 
-  // control movement of train with arrow keys
-  // accelerate forwards
-  if (pressedKeys.up) {
-    speed += acceleration * delta;
-    if (speed > maxSpeed) speed = maxSpeed;
+  distLeft -= Math.abs(delta * speed);
+
+  // overshooting stop
+  if (distLeft < 0) {
+    trainAction.time = stops[targetStop];
+    speed = 0;
   }
-  // accelerate backwards
-  if (pressedKeys.down) {
-    speed -= acceleration * delta;
-    if (speed < -maxSpeed) speed = -maxSpeed;
-  }
-  // if none are pressed, decelerate towards a stop
-  // i.e. speed == 0
-  if (!pressedKeys.up && !pressedKeys.down) {
-    // currently moving forwards
-    if (speed > 0) {
-      speed -= deceleration * delta;
-      if (speed < 0) speed = 0;
-    } else if (speed < 0) {
-      // currently moving backwards
-      speed += deceleration * delta;
-      if (speed > 0) speed = 0;
-    }
-  }
-  console.log(trainAction.time);
 
   trainAction.timeScale = speed;
   if (mixer) mixer.update(delta);
