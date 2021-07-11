@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import CreateScene from "./Scene.js";
+import url from "./res/model/world.glb?url";
 
 const CreateApp = async () => {
   const clock_ = new THREE.Clock();
@@ -73,7 +74,7 @@ const CreateApp = async () => {
     renderer_.render(scene_.getScene(), camera_);
   }
 
-  const scene_ = await CreateScene("src/res/model/world.glb");
+  const scene_ = await CreateScene(url);
 
   return {
     addToScene: (elem) => {

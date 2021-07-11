@@ -3,10 +3,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "devDependencies": {
+    "jest": "^27.0.6",
     "vite": "^2.4.0"
+  },
+  "type": "module",
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
   },
   "dependencies": {
     "three": "^0.130.1"

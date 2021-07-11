@@ -35,6 +35,10 @@ const CreateTrain = (gltf, meshName, actionName) => {
   const maxSpeed_ = 1.3;
 
   return {
+    mesh: mesh_,
+    action: action_,
+    track: track_,
+
     position: () => {
       return mesh_.position;
     },
@@ -49,7 +53,10 @@ const CreateTrain = (gltf, meshName, actionName) => {
       document.getElementById(targetStop_).classList.add("selected");
 
       // get route to next stop
-      route_ = track_.calculateRoute(action_.time, targetStop_);
+      route_ = track_.calculateRoute(
+        action_.time,
+        track_.getStationLoc(targetStop_)
+      );
       // todo add acceleration
       speed_ = route_.direction * maxSpeed_;
     },
