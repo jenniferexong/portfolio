@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import CreateTrain from "./Train.js";
+import loadGltf from "./Loader.js";
 
 const CreateScene = async (gltfUrl) => {
   const scene_ = new THREE.Scene();
@@ -33,22 +33,8 @@ const CreateScene = async (gltfUrl) => {
   // loads a scene from a gltf/glb file, setting shadows
   // const manager = new THREE.LoadingManager();
   // manager.onLoad = finishLoading;
-
-  // load the scene
-  const loader = new GLTFLoader();
-
-  const onProgress = (progressEvent) => {
-    let percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
-    console.log(`loaded: ${percent}%`);
-  };
-
-  const gltf_ = await loader.loadAsync(gltfUrl, onProgress);
+  const gltf_ = await loadGltf(gltfUrl);
   scene_.add(gltf_.scene);
-
-  if (!gltf_) {
-    console.log(`gltf loading error: ${gltfUrl}`);
-  }
-  console.log("loaded:", gltfUrl);
 
   initShadows();
   const train_ = CreateTrain(gltf_, "train", "trainAction");

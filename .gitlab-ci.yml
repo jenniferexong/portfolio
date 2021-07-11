@@ -1,0 +1,33 @@
+image: node:latest
+
+stages:
+    - test
+    - build
+
+# Run before every single job
+before_script:
+  # some installing
+  - npx yarn install
+
+cache:
+  paths:
+    - node_modules/
+
+test:
+    stage: test
+    script:
+      - npx yarn install
+      - npx yarn test
+    rules:
+      - if: '$CI_COMMIT_BRANCH != "master"'
+
+pages:
+  stage: build
+  script:
+    - npx yarn install
+    - npx yarn run build
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'

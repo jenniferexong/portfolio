@@ -22,9 +22,8 @@ const CreateTrack = () => {
 
     // calculates the shortest distance from one point on the
     // circumference to another.
-    calculateRoute: (currentPos, targetStop) => {
+    calculateRoute: (currentPos, targetPos) => {
       // find which direction is faster
-      let targetPos = stops_[targetStop];
       let diff = targetPos - currentPos;
 
       let dir; // +ve means clockwise, -ve means anti, 0 means stationary
@@ -45,7 +44,6 @@ const CreateTrack = () => {
         dir *= -1;
         distance = circumference_ - distance;
       }
-      console.log(distance);
 
       return {
         remainingDist: distance,
