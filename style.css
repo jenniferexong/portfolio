@@ -10,6 +10,39 @@ body {
   margin: 0;
 }
 
+#loadingScreen {
+  position: fixed;
+  z-index: 3;
+  height: 100%;
+  width: 100%;
+  background-color: #77cacf;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#loadingBox {
+  background-color: #77cacf;
+  width: 15em;
+  height: 3em;
+  border: solid white;
+  box-sizing: border-box;
+  padding: 0.5em;
+}
+
+#loadingLabel {
+  font-size: 2em;
+  margin: 0.5em;
+  color: white;
+}
+
+#loadingProgress {
+  width: 0%;
+  height: 100%;
+  background-color: white;
+}
+
 .instructions {
   position: absolute;
   z-index: 1;
