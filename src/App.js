@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import CreateScene from "./Scene.js";
 import url from "./res/model/world.glb?url";
 
@@ -13,8 +12,6 @@ const CreateApp = async () => {
   //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer_.outputEncoding = THREE.sRGBEncoding;
 
-  document.body.appendChild(renderer_.domElement);
-
   // camera
   const camera_ = new THREE.PerspectiveCamera(
     75,
@@ -26,43 +23,8 @@ const CreateApp = async () => {
   camera_.position.y = 2;
   camera_.rotateY(1.4);
 
-  // window resize
-  window.addEventListener("resize", onWindowResize, false);
-  function onWindowResize() {
-    camera_.aspect = window.innerWidth / window.innerHeight;
-    camera_.updateProjectionMatrix();
-    renderer_.setSize(window.innerWidth, window.innerHeight);
-    render();
-  }
-
-  // mouse control camera
-  const controls_ = new PointerLockControls(camera_, renderer_.domElement);
-  const enterInstructions = document.getElementById("enter");
-  const exitInstructions = document.getElementById("exit");
-
-  renderer_.domElement.addEventListener("click", () => {
-    controls_.lock();
-  });
-
-  controls_.addEventListener("lock", () => {
-    //enterInstructions.style.display = "none";
-    //exitInstructions.style.display = "block";
-  });
-
-  controls_.addEventListener("unlock", () => {
-    //enterInstructions.style.display = "block";
-    //exitInstructions.style.display = "none";
-  });
-
-  // select stop buttons
-  {
-    const buttons = document.getElementsByClassName("stopButtons");
-    for (const button of buttons) {
-      button.addEventListener("click", (e) => {
-        scene_.selectStop(e.target.id);
-      });
-    }
-  }
+  // wait for entire scene to load
+  const scene_ = await CreateScene(url);
 
   function render() {
     requestAnimationFrame(render);
@@ -74,9 +36,11 @@ const CreateApp = async () => {
     renderer_.render(scene_.getScene(), camera_);
   }
 
-  const scene_ = await CreateScene(url);
-
   return {
+    renderer: renderer_,
+    camera: camera_,
+    scene: scene_,
+
     addToScene: (elem) => {
       scene_.add(elem);
     },
