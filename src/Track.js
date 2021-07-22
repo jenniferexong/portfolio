@@ -1,23 +1,29 @@
+import CreateStop from "./Stop.js";
+import { linkStops } from "./Stop.js";
+
 // think of train track as a circle, where each stop is located
 // at some point on the circumference.
 // points on the circumference range from values in [0, length]
+
 const CreateTrack = () => {
   // length of the track in action.time steps
   const circumference_ = 10.0;
   const stops_ = {
-    aboutMe: 1.65,
-    bunnyGame: 3.5,
-    ribbleChat: 4.95,
-    workHistory: 5.95,
-    education: 6.95,
-    contact: 8.19,
+    aboutMe: CreateStop("aboutMe", 1.65),
+    bunnyGame: CreateStop("bunnyGame", 3.5),
+    ribbleChat: CreateStop("ribbleChat", 4.95),
+    workHistory: CreateStop("workHistory", 5.95),
+    education: CreateStop("education", 6.95),
+    contact: CreateStop("contact", 8.19),
   };
+
+  linkStops(Object.values(stops_));
 
   return {
     // keys are stop names, values are positions on circumference
     // names must match button ids
     getStationLoc: (stationName) => {
-      return stops_[stationName];
+      return stops_[stationName].location();
     },
 
     // calculates the shortest distance from one point on the

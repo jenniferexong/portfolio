@@ -22,17 +22,15 @@ export const initUI = ({ renderer, camera, render, scene }) => {
     controls.lock();
   });
 
-  //const enterInstructions = document.getElementById("enter");
+  const instructions = document.getElementById("instructions");
   //const exitInstructions = document.getElementById("exit");
 
   controls.addEventListener("lock", () => {
-    //enterInstructions.style.display = "none";
-    //exitInstructions.style.display = "block";
+    instructions.innerHTML = "Press escape to select a stop";
   });
 
   controls.addEventListener("unlock", () => {
-    //enterInstructions.style.display = "block";
-    //exitInstructions.style.display = "none";
+    instructions.innerHTML = "Select a stop";
   });
 
   // select stop buttons
@@ -40,6 +38,7 @@ export const initUI = ({ renderer, camera, render, scene }) => {
   for (const button of buttons) {
     button.addEventListener("click", (e) => {
       scene.selectStop(e.target.id);
+      controls.lock();
     });
   }
 };
