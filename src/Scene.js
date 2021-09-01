@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import CreateTrain from "./Train.js";
 import loadGltf from "./Loader.js";
+import { NotEqualDepth } from "three";
 
 const CreateScene = async (gltfUrl) => {
   const scene_ = new THREE.Scene();
@@ -36,6 +37,12 @@ const CreateScene = async (gltfUrl) => {
   const gltf_ = await loadGltf(gltfUrl);
   scene_.add(gltf_.scene);
 
+  const video = document.getElementById("video");
+  const texture = new THREE.VideoTexture(video);
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
+  // set video texture
   initShadows();
   const train_ = CreateTrain(gltf_, "train", "trainAction");
 
@@ -45,6 +52,12 @@ const CreateScene = async (gltfUrl) => {
       if (node.isMesh) {
         node.castShadow = true;
         node.receiveShadow = true;
+
+        if (node.name === "Screen") {
+          console.log("screen");
+          node.material = new THREE.MeshBasicMaterial({ map: texture });
+          node.material.side = THREE.DoubleSide;
+        }
       }
     });
   }

@@ -20,6 +20,7 @@ export const initUI = ({ renderer, camera, render, scene }) => {
 
   controls.domElement.addEventListener("click", () => {
     controls.lock();
+    document.getElementById("video").play();
   });
 
   const instructions = document.getElementById("instructions");

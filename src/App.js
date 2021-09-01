@@ -11,6 +11,7 @@ const CreateApp = async () => {
   renderer_.shadowMap.enabled = true;
   //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer_.outputEncoding = THREE.sRGBEncoding;
+  renderer_.setPixelRatio(window.devicePixelRatio);
 
   // camera
   const camera_ = new THREE.PerspectiveCamera(
