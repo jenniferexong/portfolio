@@ -53,6 +53,7 @@ const CreateApp = async () => {
     camera: camera_,
     scene: scene_,
     controls: controls_,
+    mouse_picker: mouse_picker_,
 
     addToScene: (elem) => {
       scene_.add(elem);

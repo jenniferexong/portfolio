@@ -1,5 +1,5 @@
-import CreateStop from "./Stop.js";
-import { linkStops } from "./Stop.js";
+import CreateStop from "./stop.js";
+import { linkStops } from "./stop.js";
 
 // think of train track as a circle, where each stop is located
 // at some point on the circumference.

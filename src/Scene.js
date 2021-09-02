@@ -42,19 +42,26 @@ const CreateScene = async (gltfUrl) => {
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
 
-  let pickable_ = [];
+  const pickable_ = [];
+
   // set video texture
   initShadows();
   const train_ = CreateTrain(gltf_, "train", "trainAction");
 
+  // TODO rename
   function initShadows() {
     // set every mesh in gltf to cast and receive shadows
     gltf_.scene.traverse((node) => {
-      //   scene_.add(node);
       if (node.isMesh) {
-        pickable_.push(node);
+        // interactive objects
+        if (node.name.startsWith("i_", 0)) {
+          console.log(node.name);
+          pickable_.push(node);
+        }
         node.castShadow = true;
         node.receiveShadow = true;
+        node.material.side = THREE.FrontSide; // important
+
         if (node.name === "video_screen") {
           console.log("screen");
           node.material = new THREE.MeshBasicMaterial({ map: texture });

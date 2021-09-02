@@ -10,6 +10,23 @@ body {
   margin: 0;
 }
 
+#crossHair {
+  pointer-events: none;
+  position: fixed;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.pointer {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 3em;
+  font-weight: 100;
+}
+
 #loadingScreen {
   position: fixed;
   z-index: 3;

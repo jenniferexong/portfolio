@@ -12,14 +12,14 @@
   </head>
   <body>
     <div id="app">
-      <video id="video" type="video/mp4" loop style="display: none">
-        <source src="demo.mov" type="video/mp4" />
-      </video>
       <div id="loadingScreen">
         <h1 id="loadingLabel">Loading...</h1>
         <div id="loadingBox">
           <div id="loadingProgress"></div>
         </div>
+      </div>
+      <div id="crossHair">
+        <h2 class="pointer">+</h2>
       </div>
       <div class="guiContainer">
         <label id="instructions">Select a stop</label>
@@ -33,6 +33,9 @@
         </ul>
       </div>
     </div>
+    <video id="video" type="video/mp4" loop style="display: none">
+      <source src="./src/res/demo.mov" type="video/mp4" />
+    </video>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

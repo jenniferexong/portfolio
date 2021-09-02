@@ -9,18 +9,25 @@ const CreateMousePicker = (camera, scene) => {
   // Gets all object that the mouse ray is intersecting
   function getIntersecting() {
     ray_caster_.setFromCamera(coords_, camera);
-    return ray_caster_.intersectObjects(scene.getPickable(), true);
+    return ray_caster_.intersectObjects(scene.getPickable(), false);
   }
 
   function hover() {
     const intersects = getIntersecting();
-    for (let i = 0; i < intersects.length; i++) {
-      intersects[i].object.material.color.set(0xff0000);
-    }
+    for (let i = 0; i < intersects.length; i++) {}
   }
 
   function click() {
     console.log("Mouse picker on click");
+
+    const intersects = getIntersecting();
+    for (let i = 0; i < intersects.length; i++) {
+      if (intersects[i].object.name === "i_play_button") {
+        console.log("toggle play");
+        let video = document.getElementById("video");
+        video.paused ? video.play() : video.pause();
+      }
+    }
   }
 
   return {
