@@ -1,4 +1,4 @@
-import CreateTrack from "../Track.js";
+import CreateTrack from "../track.js";
 
 // can't use loader because it requires XMLHttpRequest
 // which node doesn't support?

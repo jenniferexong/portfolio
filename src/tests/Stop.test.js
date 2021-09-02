@@ -1,5 +1,5 @@
-import CreateStop from "../Stop.js";
-import { linkStops } from "../Stop.js";
+import CreateStop from "../stop.js";
+import { linkStops } from "../stop.js";
 
 test("single stop", () => {
   const stop = CreateStop("a", 0);
