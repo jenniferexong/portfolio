@@ -1,4 +1,4 @@
-import CreateApp from "./App.js";
+import CreateApp from "./app.js";
 import { initUI } from "./UI.js";
 
 CreateApp().then((app) => {

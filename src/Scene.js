@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import CreateTrain from "./Train.js";
-import loadGltf from "./Loader.js";
+import CreateTrain from "./train.js";
+import loadGltf from "./loader.js";
 import { NotEqualDepth } from "three";
 
 const CreateScene = async (gltfUrl) => {

@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import CreateScene from "./Scene.js";
+import CreateScene from "./scene.js";
+import CreateMousePicker from "./mousepicker.js";
 import url from "./res/model/world.glb?url";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
@@ -31,22 +32,13 @@ const CreateApp = async () => {
 
   // wait for entire scene to load
   const scene_ = await CreateScene(url);
-
-  const coords = new THREE.Vector2(0, 0);
+  const mouse_picker_ = CreateMousePicker(camera_, scene_);
 
   function render() {
     requestAnimationFrame(render);
 
-    var direction = new THREE.Vector3();
-    var raycaster = new THREE.Raycaster();
+    mouse_picker_.onHover();
 
-    raycaster.setFromCamera(coords, camera_);
-    const intersects = raycaster.intersectObjects(scene_.getPickable(), true);
-
-    console.log(intersects.length);
-    for (let i = 0; i < intersects.length; i++) {
-      intersects[i].object.material.color.set(0xff0000);
-    }
     // update scene
     scene_.update(clock_.getDelta());
     // update camera position

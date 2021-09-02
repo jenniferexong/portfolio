@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import CreateTrack from "./Track.js";
+import CreateTrack from "./track.js";
 
 const CreateTrain = (gltf, meshName, actionName) => {
   const mesh_ = gltf.scene.children.find((child) => child.name === meshName);
