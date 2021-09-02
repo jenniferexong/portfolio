@@ -1,7 +1,7 @@
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
 // handles all ui functionality
-export const initUI = ({ renderer, camera, render, scene }) => {
+export const initUI = ({ renderer, camera, render, scene, controls }) => {
   // attach renderer to window
   document.body.appendChild(renderer.domElement);
 
@@ -15,16 +15,12 @@ export const initUI = ({ renderer, camera, render, scene }) => {
     render();
   }
 
-  // mouse control camera
-  const controls = new PointerLockControls(camera, renderer.domElement);
-
   controls.domElement.addEventListener("click", () => {
     controls.lock();
     document.getElementById("video").play();
   });
 
   const instructions = document.getElementById("instructions");
-  //const exitInstructions = document.getElementById("exit");
 
   controls.addEventListener("lock", () => {
     instructions.innerHTML = "Press escape to select a stop";
