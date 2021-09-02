@@ -1,23 +1,23 @@
 import * as THREE from "three";
 
 // ray casting / mouse picking
-const CreateMousePicker = (camera, scene) => {
+export const createMousePicker = (camera, scene) => {
   // location of the mouse in screen coordinates
-  const coords_ = new THREE.Vector2(0, 0);
-  const ray_caster_ = new THREE.Raycaster();
+  const coords = new THREE.Vector2(0, 0);
+  const rayCaster = new THREE.Raycaster();
 
   // Gets all object that the mouse ray is intersecting
   function getIntersecting() {
-    ray_caster_.setFromCamera(coords_, camera);
-    return ray_caster_.intersectObjects(scene.getPickable(), false);
+    rayCaster.setFromCamera(coords, camera);
+    return rayCaster.intersectObjects(scene.getPickable(), false);
   }
 
-  function hover() {
+  function onHover() {
     const intersects = getIntersecting();
     for (let i = 0; i < intersects.length; i++) {}
   }
 
-  function click() {
+  function onClick() {
     console.log("Mouse picker on click");
 
     const intersects = getIntersecting();
@@ -31,9 +31,7 @@ const CreateMousePicker = (camera, scene) => {
   }
 
   return {
-    onHover: hover,
-    onClick: click,
+    onHover,
+    onClick,
   };
 };
-
-export default CreateMousePicker;

@@ -1,7 +1,6 @@
-import CreateApp from "./app.js";
+import { createApp } from "./app.js";
 import { initUI } from "./UI.js";
 
-CreateApp().then((app) => {
-  initUI(app);
-  app.render();
-});
+const app = await createApp();
+initUI(app);
+app.render();

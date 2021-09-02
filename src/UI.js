@@ -1,5 +1,3 @@
-import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-
 // handles all ui functionality
 export const initUI = ({
   renderer,
@@ -7,7 +5,7 @@ export const initUI = ({
   render,
   scene,
   controls,
-  mouse_picker,
+  mousePicker,
 }) => {
   // attach renderer to window
   document.body.appendChild(renderer.domElement);
@@ -25,7 +23,7 @@ export const initUI = ({
   document.addEventListener("click", (e) => {
     e.stopPropagation();
     e.preventDefault();
-    mouse_picker.onClick();
+    mousePicker.onClick();
     controls.lock();
   });
 
