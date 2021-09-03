@@ -37,7 +37,7 @@ export const createScene = async (gltfUrl) => {
   const gltf = await loadGltf(gltfUrl);
   scene.add(gltf.scene);
 
-  const video = document.getElementById("video");
+  const video = document.getElementById("demo");
   const texture = new THREE.VideoTexture(video);
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
@@ -74,7 +74,6 @@ export const createScene = async (gltfUrl) => {
   }
 
   const interactable = initInteractables(interactiveObjects);
-  console.log(interactable === undefined);
 
   return {
     interactiveObjects, // Object3D

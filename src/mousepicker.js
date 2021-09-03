@@ -30,8 +30,6 @@ export const createMousePicker = (camera, scene) => {
   }
 
   function onClick() {
-    console.log("Mouse picker on click");
-
     const intersects = getIntersecting();
     for (const name of intersects) {
       if (name in scene.interactable) {
