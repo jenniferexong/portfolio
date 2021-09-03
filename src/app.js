@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { createScene } from "./scene.js";
 import { createMousePicker } from "./mousepicker.js";
+import { createView } from "./view.js";
 import url from "./res/model/world.glb?url";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
@@ -33,6 +34,7 @@ export const createApp = async () => {
   // wait for entire scene to load
   const scene = await createScene(url);
   const mousePicker = createMousePicker(camera, scene);
+  const view = createView(scene);
 
   function render() {
     requestAnimationFrame(render);
@@ -46,6 +48,7 @@ export const createApp = async () => {
     camera.position.set(pos.x, pos.y + 0.5, pos.z);
 
     renderer.render(scene.getScene(), camera);
+    view.update();
   }
 
   return {

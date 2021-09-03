@@ -1,15 +1,11 @@
 export const createStop = (name, location) => {
-  const name_ = name;
-  const location_ = location;
-  let next_, previous_;
+  let next, previous;
 
   return {
-    name: () => name_,
-    location: () => location_,
-    next: () => next_,
-    previous: () => previous_,
-    setNext: (next) => (next_ = next),
-    setPrevious: (previous) => (previous_ = previous),
+    name,
+    location,
+    next,
+    previous,
   };
 };
 
@@ -17,9 +13,9 @@ export const createStop = (name, location) => {
 export function linkStops(stopsArray) {
   for (let i = 0; i < stopsArray.length; i++) {
     // link first and last stops
-    let previous = i == 0 ? stopsArray.length - 1 : i - 1;
-    let next = i == stopsArray.length - 1 ? 0 : i + 1;
-    stopsArray[i].setPrevious(stopsArray[previous]);
-    stopsArray[i].setNext(stopsArray[next]);
+    let p = i == 0 ? stopsArray.length - 1 : i - 1;
+    let n = i == stopsArray.length - 1 ? 0 : i + 1;
+    stopsArray[i].previous = stopsArray[p];
+    stopsArray[i].next = stopsArray[n];
   }
 }

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createTrain } from "./train.js";
+import { createTrainDriver } from "./traindriver.js";
 import { loadGltf } from "./loader.js";
 import { initInteractables } from "./interactable.js";
 
@@ -44,6 +45,7 @@ export const createScene = async (gltfUrl) => {
 
   const interactiveObjects = {};
   const train = createTrain(gltf, "train", "trainAction");
+  const trainDriver = createTrainDriver(train);
 
   initObjects();
   function initObjects() {
@@ -78,10 +80,11 @@ export const createScene = async (gltfUrl) => {
   return {
     interactiveObjects, // Object3D
     interactable, // { mesh_name: interactable}
+    trainDriver,
     add: (elem) => scene.add(elem),
-    selectStop: (stopName) => train.setTargetStop(stopName),
+    selectStop: (stopName) => trainDriver.setTargetStop(stopName),
     getScene: () => scene,
-    update: (delta) => train.update(delta),
+    update: (delta) => trainDriver.update(delta),
     getTrainPos: () => train.position(),
   };
 };

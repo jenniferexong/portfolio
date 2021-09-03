@@ -63,14 +63,13 @@ body {
 .guiContainer {
   position: absolute;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: column-reverse;
   align-items: center;
   text-align: center;
   box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
   padding: 2em;
-  width: 15em;
-  height: 30em;
   z-index: 2;
 }
 
@@ -82,9 +81,6 @@ body {
 
 .buttonsContainer {
   display: flex;
-  flex-direction: column;
-  vertical-align: bottom;
-  padding: 0;
 }
 
 .stopButtons {
@@ -92,6 +88,7 @@ body {
   font-weight: 600;
   padding: 0.8em;
   margin-top: 1em;
+  margin-right: 1em;
   font-size: 1em;
   background-color: rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.4);
@@ -102,11 +99,16 @@ body {
 }
 
 .selected {
-  border: solid white;
-  color: white;
+  border: solid black;
+  color: black;
 }
 
 .selected:hover {
+  color: white;
+}
+
+.hovered {
+  border: solid white;
   color: white;
 }
 

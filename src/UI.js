@@ -20,6 +20,7 @@ export const initUI = ({
     render();
   }
 
+  // Click event
   document.addEventListener("click", (e) => {
     if (controls.isLocked) {
       mousePicker.onClick();
@@ -28,16 +29,37 @@ export const initUI = ({
     }
   });
 
-  const instructions = document.getElementById("instructions");
+  // Key event
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+    }
+    if (controls.isLocked) {
+      // unlocking
+      if (e.key === "Escape") {
+        controls.unlock();
+      } else if (e.key === "w") {
+      } else if (e.key === "s") {
+      } else if (e.key === "a" || e.key === "ArrowLeft") {
+        scene.trainDriver.ponderPreviousStop();
+      } else if (e.key === "d" || e.key === "ArrowRight") {
+        scene.trainDriver.ponderNextStop();
+      } else if (e.key === "Enter" || e.key === " ") {
+        scene.trainDriver.lockInStop();
+      }
+    }
+  });
+
+  //   const instructions = document.getElementById("instructions");
   const crosshair = document.getElementById("crossHair");
 
   controls.addEventListener("lock", () => {
-    instructions.innerHTML = "Press escape to select a stop";
+    // instructions.innerHTML = "Press escape to select a stop";
     crosshair.style.display = "flex";
   });
 
   controls.addEventListener("unlock", () => {
-    instructions.innerHTML = "Select a stop";
+    // instructions.innerHTML = "Select a stop";
     crosshair.style.display = "none";
   });
 

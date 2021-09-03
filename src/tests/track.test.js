@@ -14,8 +14,8 @@ test("find route (clockwise)", () => {
   expect(route.remainingDist).toBe(1);
   expect(route.direction).toBe(1);
 
-  route = track.calculateRoute(0, track.getStationLoc("aboutMe"));
-  expect(route.remainingDist).toBe(track.getStationLoc("aboutMe"));
+  route = track.calculateRoute(0, track.getStopLoc("aboutMe"));
+  expect(route.remainingDist).toBe(track.getStopLoc("aboutMe"));
   expect(route.direction).toBe(1);
 });
 
@@ -25,8 +25,8 @@ test("find route (anticlockwise)", () => {
   expect(route.direction).toBe(-1);
 
   // last stop to second to last stop
-  const loc1 = track.getStationLoc("contact");
-  const loc2 = track.getStationLoc("education");
+  const loc1 = track.getStopLoc("contact");
+  const loc2 = track.getStopLoc("education");
   route = track.calculateRoute(loc1, loc2);
   expect(route.remainingDist).toBe(loc1 - loc2);
   expect(route.direction).toBe(-1);
