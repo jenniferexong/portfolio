@@ -6,26 +6,36 @@ export const createMousePicker = (camera, scene) => {
   const coords = new THREE.Vector2(0, 0);
   const rayCaster = new THREE.Raycaster();
 
-  // Gets all object that the mouse ray is intersecting
+  // Gets the names of objects that the mouse ray is intersecting
   function getIntersecting() {
     rayCaster.setFromCamera(coords, camera);
-    return rayCaster.intersectObjects(scene.getPickable(), false);
+    const intersecting = rayCaster.intersectObjects(
+      Object.values(scene.interactiveObjects),
+      false
+    );
+
+    return intersecting.map((i) => i.object.name);
   }
 
   function onHover() {
     const intersects = getIntersecting();
-    for (let i = 0; i < intersects.length; i++) {}
+    for (const [key, value] of Object.entries(scene.interactable)) {
+      // hovering
+      if (intersects.includes(key)) {
+        value.onHover();
+      } else {
+        value.offHover();
+      }
+    }
   }
 
   function onClick() {
     console.log("Mouse picker on click");
 
     const intersects = getIntersecting();
-    for (let i = 0; i < intersects.length; i++) {
-      if (intersects[i].object.name === "i_play_button") {
-        console.log("toggle play");
-        let video = document.getElementById("video");
-        video.paused ? video.play() : video.pause();
+    for (const name of intersects) {
+      if (name in scene.interactable) {
+        scene.interactable[name].onClick();
       }
     }
   }

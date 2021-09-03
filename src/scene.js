@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { createTrain } from "./train.js";
 import { loadGltf } from "./loader.js";
+import { initInteractables } from "./interactable.js";
 
 export const createScene = async (gltfUrl) => {
   const scene = new THREE.Scene();
@@ -41,37 +42,43 @@ export const createScene = async (gltfUrl) => {
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
 
-  const pickable = [];
-
-  // set video texture
-  initShadows();
+  const interactiveObjects = {};
   const train = createTrain(gltf, "train", "trainAction");
 
-  // TODO rename
-  function initShadows() {
-    // set every mesh in gltf to cast and receive shadows
+  initObjects();
+  function initObjects() {
     gltf.scene.traverse((node) => {
+      // shadows
       if (node.isMesh) {
-        // interactive objects
-        if (node.name.startsWith("i_", 0)) {
-          console.log(node.name);
-          pickable.push(node);
-        }
         node.castShadow = true;
         node.receiveShadow = true;
-        node.material.side = THREE.FrontSide; // important
 
+        node.material.side = THREE.FrontSide; // back face culling
+
+        // Set texture for video screen
         if (node.name === "video_screen") {
-          console.log("screen");
           node.material = new THREE.MeshBasicMaterial({ map: texture });
           node.material.side = THREE.DoubleSide;
+        }
+
+        // interactive objects
+        if (node.name.startsWith("i_", 0)) {
+          interactiveObjects[node.name] = node;
+        }
+
+        if (node.name === "pause_icon") {
+          node.visible = false;
         }
       }
     });
   }
 
+  const interactable = initInteractables(interactiveObjects);
+  console.log(interactable === undefined);
+
   return {
-    getPickable: () => pickable,
+    interactiveObjects, // Object3D
+    interactable, // { mesh_name: interactable}
     add: (elem) => scene.add(elem),
     selectStop: (stopName) => train.setTargetStop(stopName),
     getScene: () => scene,
