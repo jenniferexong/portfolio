@@ -17,19 +17,31 @@ export const initInteractables = (interactive) => {
         );
         break;
       case "i_bunny_repo_button":
-        interactable[key] = new Button(interactive["i_bunny_repo_text"]);
+        interactable[key] = new LinkButton(
+          interactive["i_bunny_repo_text"],
+          "https://github.com/jenniferexong/bunny-game"
+        );
         break;
       case "i_ribble_repo_button":
-        interactable[key] = new Button(interactive["i_ribble_repo_text"]);
+        interactable[key] = new LinkButton(
+          interactive["i_ribble_repo_text"],
+          "https://github.com/ribble-chat/ribble"
+        );
         break;
       case "i_linkedin_button":
-        interactable[key] = new Button(interactive["i_linkedin_text"]);
+        interactable[key] = new LinkButton(
+          interactive["i_linkedin_text"],
+          "https://www.linkedin.com/in/jennifer-ong-899a6a14a/"
+        );
+        break;
+      case "i_github_button":
+        interactable[key] = new LinkButton(
+          interactive["i_github_text"],
+          "https://github.com/jenniferexong"
+        );
         break;
       case "i_email_button":
         interactable[key] = new Button(interactive["i_email_text"]);
-        break;
-      case "i_github_button":
-        interactable[key] = new Button(interactive["i_github_text"]);
         break;
     }
   }
@@ -143,5 +155,19 @@ class PlayButton extends Button {
 
     // Show current button icon
     this.icon.visible = true;
+  }
+}
+
+/**
+ * A button that opens a link
+ */
+class LinkButton extends Button {
+  constructor(textObj, url) {
+    super(textObj);
+    this.url = url;
+  }
+
+  onClick() {
+    window.open(this.url, "_blank").focus();
   }
 }

@@ -21,10 +21,11 @@ export const initUI = ({
   }
 
   document.addEventListener("click", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    mousePicker.onClick();
-    controls.lock();
+    if (controls.isLocked) {
+      mousePicker.onClick();
+    } else {
+      controls.lock();
+    }
   });
 
   const instructions = document.getElementById("instructions");
