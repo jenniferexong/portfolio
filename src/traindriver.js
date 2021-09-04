@@ -63,6 +63,22 @@ export const createTrainDriver = (train) => {
     ).previous.name;
   };
 
+  const driveForward = () => {
+    stopManager.targetStop = "";
+    acceleration = ACCELERATION;
+    direction = 1;
+  };
+
+  const driveBackward = () => {
+    stopManager.targetStop = "";
+    acceleration = ACCELERATION;
+    direction = -1;
+  };
+
+  const releasePedal = () => {
+    acceleration = -ACCELERATION;
+  };
+
   const driveTrain = (delta) => {
     speed += acceleration * delta;
     speed = clamp(speed, 0, MAX_SPEED);
@@ -70,17 +86,13 @@ export const createTrainDriver = (train) => {
     train.setSpeed(speed * direction);
     train.update(delta);
 
-    // check for overshooting stop
-    route.remainingDist -= Math.abs(delta * speed);
+    if (stopManager.targetStop !== "") {
+      // check for overshooting target stop
+      route.remainingDist -= Math.abs(delta * speed);
 
-    if (route.remainingDist < RANGE) {
-      acceleration = -ACCELERATION;
-    }
-
-    // End the journey to the target stop
-    if (stopManager.currentStop == stopManager.targetStop) {
-      stopManager.currentStop = stopManager.targetStop;
-      return;
+      if (route.remainingDist < RANGE) {
+        acceleration = -ACCELERATION;
+      }
     }
 
     // the current stop
@@ -115,6 +127,9 @@ export const createTrainDriver = (train) => {
     setTargetStop,
     ponderNextStop,
     ponderPreviousStop,
+    driveBackward,
+    driveForward,
+    releasePedal,
 
     // set hovered stop as target
     lockInStop: () => setTargetStop(stopManager.hoveredStop),

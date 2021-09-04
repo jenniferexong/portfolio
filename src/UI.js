@@ -34,19 +34,49 @@ export const initUI = ({
     if (e.key === "Tab") {
       e.preventDefault();
     }
-    if (controls.isLocked) {
-      // unlocking
-      if (e.key === "Escape") {
+
+    if (!controls.isLocked) return;
+
+    switch (e.key) {
+      case "Escape":
         controls.unlock();
-      } else if (e.key === "w") {
-      } else if (e.key === "s") {
-      } else if (e.key === "a" || e.key === "ArrowLeft") {
+        break;
+      case "w":
+      case "ArrowUp":
+        scene.trainDriver.driveForward();
+        break;
+      case "s":
+      case "ArrowDown":
+        scene.trainDriver.driveBackward();
+        break;
+      case "a":
+      case "ArrowLeft":
         scene.trainDriver.ponderPreviousStop();
-      } else if (e.key === "d" || e.key === "ArrowRight") {
+        break;
+      case "d":
+      case "ArrowRight":
         scene.trainDriver.ponderNextStop();
-      } else if (e.key === "Enter" || e.key === " ") {
+        break;
+      case " ":
+      case "Enter":
         scene.trainDriver.lockInStop();
-      }
+        break;
+    }
+  });
+
+  document.addEventListener("keyup", (e) => {
+    if (!controls.isLocked) return;
+
+    switch (e.key) {
+      case "w":
+      case "a":
+      case "s":
+      case "d":
+      case "ArrowUp":
+      case "ArrowDown":
+      case "ArrowLeft":
+      case "ArrowRight":
+        scene.trainDriver.releasePedal();
     }
   });
 
