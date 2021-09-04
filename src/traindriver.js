@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { createTrack } from "./track.js";
 
+export const Direction = { FORWARD: 1, BACKWARD: -1, STATIONARY: 0 };
+
 const MAX_SPEED = 0.7;
 const RANGE = 0.2;
 const ACCELERATION = 1.1;
@@ -9,7 +11,6 @@ const START_POSITION = 9.5;
 
 export const createTrainDriver = (train) => {
   const track = createTrack();
-
   const stopManager = {
     currentStop: "",
     previousStop: "",
@@ -18,13 +19,10 @@ export const createTrainDriver = (train) => {
     targetStop: "",
   };
 
-  let route = {
-    remainingDist: 100,
-    direction: 0,
-  };
+  let remainingDistance = 100;
 
   let speed = 0;
-  let direction = 1;
+  let direction = Direction.FORWARD;
   let acceleration = 0;
 
   // set initial position of train
@@ -41,14 +39,16 @@ export const createTrainDriver = (train) => {
     stopManager.targetStop = stopName;
 
     // get route to next stop
-    route = track.calculateRoute(
+    const route = track.calculateRoute(
       train.getCurrentTime(),
       track.getStopLoc(stopManager.targetStop)
     );
 
-    speed = MAX_SPEED;
-    acceleration = 0;
+    // if change of direction, reset speed
+    if (direction !== route.direction) speed = 0;
+    acceleration = ACCELERATION;
     direction = route.direction;
+    remainingDistance = route.remainingDistance;
   };
 
   const ponderNextStop = () => {
@@ -63,16 +63,14 @@ export const createTrainDriver = (train) => {
     ).previous.name;
   };
 
-  const driveForward = () => {
+  const driveInDirection = (newDirection) => {
     stopManager.targetStop = "";
-    acceleration = ACCELERATION;
-    direction = 1;
-  };
 
-  const driveBackward = () => {
-    stopManager.targetStop = "";
+    // if change of direction, reset speed
+    if (newDirection !== direction) speed = 0;
+
     acceleration = ACCELERATION;
-    direction = -1;
+    direction = newDirection;
   };
 
   const releasePedal = () => {
@@ -88,9 +86,9 @@ export const createTrainDriver = (train) => {
 
     if (stopManager.targetStop !== "") {
       // check for overshooting target stop
-      route.remainingDist -= Math.abs(delta * speed);
+      remainingDistance -= Math.abs(delta * speed);
 
-      if (route.remainingDist < RANGE) {
+      if (remainingDistance < RANGE) {
         acceleration = -ACCELERATION;
       }
     }
@@ -103,12 +101,12 @@ export const createTrainDriver = (train) => {
     let distNext = track.calculateRoute(
       train.getCurrentTime(),
       stop.next.location
-    ).remainingDist;
+    ).remainingDistance;
 
     let distPrev = track.calculateRoute(
       train.getCurrentTime(),
       stop.previous.location
-    ).remainingDist;
+    ).remainingDistance;
 
     if (distNext < RANGE) {
       stopManager.previousStop = stopManager.currentStop;
@@ -127,8 +125,7 @@ export const createTrainDriver = (train) => {
     setTargetStop,
     ponderNextStop,
     ponderPreviousStop,
-    driveBackward,
-    driveForward,
+    driveInDirection,
     releasePedal,
 
     // set hovered stop as target

@@ -1,5 +1,6 @@
 import { createStop } from "./stop.js";
 import { linkStops } from "./stop.js";
+import { Direction } from "./traindriver";
 
 /**
  * Think of train track as a circle, where each stop is located
@@ -25,44 +26,42 @@ export const createTrack = () => {
   ghostStop.next = stops.aboutMe;
   ghostStop.previous = stops.contact;
 
+  /**
+   * Calculates the shortest distance from one point on the circumference to another.
+   * @param {float} currentPos
+   * @param {float} targetPos
+   * @returns Remaining distance to travel, and direction to travel
+   */
+  const calculateRoute = (currentPos, targetPos) => {
+    // find which direction is faster
+    let diff = targetPos - currentPos;
+
+    let direction;
+    if (diff > 0) {
+      direction = Direction.FORWARD;
+    } else if (diff < 0) {
+      direction = Direction.BACKWARD;
+    }
+
+    // get shortest distance between current location and
+    // next stop's location
+    let remainingDistance = Math.abs(diff);
+
+    // other direction is shorter
+    if (Math.abs(diff) > circumference / 2) {
+      direction *= -1;
+      remainingDistance = circumference - remainingDistance;
+    }
+
+    return {
+      remainingDistance,
+      direction,
+    };
+  };
+
   return {
-    // keys are stop names, values are positions on circumference
-    // names must match button ids
-    getStopLoc: (stopName) => {
-      return stops[stopName].location;
-    },
-
+    getStopLoc: (stopName) => stops[stopName].location,
     getStop: (name) => (name === "" ? ghostStop : stops[name]),
-
-    // calculates the shortest distance from one point on the
-    // circumference to another.
-    calculateRoute: (currentPos, targetPos) => {
-      // find which direction is faster
-      let diff = targetPos - currentPos;
-
-      let dir; // +ve means clockwise, -ve means anti, 0 means stationary
-      if (diff > 0) {
-        dir = 1;
-      } else if (diff < 0) {
-        dir = -1;
-      } else {
-        dir = 0;
-      }
-
-      // get shortest distance between current location and
-      // next stop's location
-      let distance = Math.abs(diff);
-
-      // other direction is shorter
-      if (Math.abs(diff) > circumference / 2) {
-        dir *= -1;
-        distance = circumference - distance;
-      }
-
-      return {
-        remainingDist: distance,
-        direction: dir,
-      };
-    },
+    calculateRoute,
   };
 };
