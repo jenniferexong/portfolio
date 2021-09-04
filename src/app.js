@@ -26,7 +26,7 @@ export const createApp = async () => {
   );
   camera.position.z = 5;
   camera.position.y = 2;
-  camera.rotateY(1.4);
+  camera.rotateY(3.3);
 
   // mouse control camera
   const controls = new PointerLockControls(camera, renderer.domElement);

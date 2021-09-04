@@ -24,7 +24,7 @@ export const createScene = async (gltfUrl) => {
     const sun = new THREE.PointLight("#e8dba8", 1);
     sun.position.set(0, 20, 10);
     sun.castShadow = true;
-    sun.shadow.bias = -0.0004;
+    sun.shadow.bias = -0.0005;
     sun.shadow.mapSize.width = 1024 * 3;
     sun.shadow.radius = 3;
     sun.shadow.mapSize.height = 1024 * 3;

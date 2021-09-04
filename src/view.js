@@ -20,11 +20,15 @@ export const createView = (scene) => {
 
     currentStop;
 
-    // unselect previousStop
-    document.getElementById(previousStop).classList.remove("selected");
+    if (previousStop !== "") {
+      // unselect previousStop
+      document.getElementById(previousStop).classList.remove("selected");
+    }
 
-    // select currentStop
-    document.getElementById(currentStop).classList.add("selected");
+    if (currentStop !== "") {
+      // select currentStop
+      document.getElementById(currentStop).classList.add("selected");
+    }
 
     // unhover previous hovered
     document.getElementById(previousHoveredStop).classList.remove("hovered");

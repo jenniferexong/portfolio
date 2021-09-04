@@ -5,16 +5,17 @@ import { createTrack } from "./track.js";
 const MAX_SPEED = 0.7;
 const RANGE = 0.2;
 const ACCELERATION = 1.1;
+const START_POSITION = 9.5;
 
 export const createTrainDriver = (train) => {
   const track = createTrack();
 
   const stopManager = {
-    currentStop: "aboutMe",
-    previousStop: "aboutMe",
+    currentStop: "",
+    previousStop: "",
     hoveredStop: "aboutMe",
     previousHoveredStop: "aboutMe",
-    targetStop: "aboutMe",
+    targetStop: "",
   };
 
   let route = {
@@ -27,7 +28,7 @@ export const createTrainDriver = (train) => {
   let acceleration = 0;
 
   // set initial position of train
-  train.setTime(track.getStopLoc("aboutMe"));
+  train.setTime(START_POSITION);
   train.setSpeed(0);
 
   /**

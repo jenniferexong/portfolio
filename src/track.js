@@ -13,12 +13,17 @@ export const createTrack = () => {
     aboutMe: createStop("aboutMe", 1.65),
     bunnyGame: createStop("bunnyGame", 3.5),
     ribbleChat: createStop("ribbleChat", 4.95),
-    workHistory: createStop("workHistory", 5.95),
+    workExperience: createStop("workExperience", 5.95),
     education: createStop("education", 6.95),
     contact: createStop("contact", 8.19),
   };
 
   linkStops(Object.values(stops));
+
+  // Used when user first enters the website - the controls 'stop'
+  const ghostStop = createStop("controls", 0);
+  ghostStop.next = stops.aboutMe;
+  ghostStop.previous = stops.contact;
 
   return {
     // keys are stop names, values are positions on circumference
@@ -27,7 +32,7 @@ export const createTrack = () => {
       return stops[stopName].location;
     },
 
-    getStop: (name) => stops[name],
+    getStop: (name) => (name === "" ? ghostStop : stops[name]),
 
     // calculates the shortest distance from one point on the
     // circumference to another.
