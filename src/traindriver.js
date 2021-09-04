@@ -35,6 +35,8 @@ export const createTrainDriver = (train) => {
    * @param {String} stopName Stop to lock in
    */
   const setTargetStop = (stopName) => {
+    if (stopName === stopManager.currentStop) return;
+
     stopManager.targetStop = stopName;
 
     // get route to next stop
