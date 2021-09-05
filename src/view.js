@@ -34,11 +34,11 @@ export const createView = (scene) => {
     document.getElementById(previousHoveredStop).classList.remove("hovered");
 
     // hover current hovered, if not the current stop
-    if (hoveredStop === currentStop) {
-      document.getElementById(hoveredStop).classList.remove("hovered");
-    } else {
-      document.getElementById(hoveredStop).classList.add("hovered");
-    }
+    // if (hoveredStop === currentStop) {
+    //   document.getElementById(hoveredStop).classList.remove("hovered");
+    // } else {
+    document.getElementById(hoveredStop).classList.add("hovered");
+    // }
   };
 
   return {
