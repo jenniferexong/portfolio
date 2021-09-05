@@ -10,6 +10,22 @@ body {
   margin: 0;
 }
 
+#outOfFocus {
+  position: fixed;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(0, 0, 0, 0.6);
+}
+
+.instructions {
+  color: white;
+  font-size: 2em;
+}
+
 #crossHair {
   pointer-events: none;
   position: fixed;
@@ -60,9 +76,9 @@ body {
   background-color: white;
 }
 
-.guiContainer {
+#gui {
   position: absolute;
-  display: flex;
+  display: none;
   flex-direction: column-reverse;
   align-items: center;
   text-align: center;
@@ -71,12 +87,6 @@ body {
   height: 100vh;
   padding: 2em;
   z-index: 2;
-}
-
-#instructions {
-  font-size: 0.8em;
-  color: white;
-  font-weight: bold;
 }
 
 .buttonsContainer {
@@ -100,15 +110,11 @@ body {
 }
 
 .target {
-  border: solid rgb(0, 255, 229);
-  color: rgb(0, 255, 229);
+  border: solid rgb(64, 255, 0);
+  color: rgb(64, 255, 0);
 }
 
 .hovered {
   border: solid white;
   color: white;
-}
-
-#exit {
-  display: none;
 }

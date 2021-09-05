@@ -30,18 +30,25 @@ export const initUI = ({
     }
   });
 
+  const outOfFocusOverlay = document.getElementById("outOfFocus");
+
   // Key event
   document.addEventListener("keydown", (e) => {
     if (e.key === "Tab") {
       e.preventDefault();
     }
 
-    if (!controls.isLocked) return;
+    if (e.key === "Escape") {
+      controls.unlock();
+      return;
+    }
+
+    if (!controls.isLocked) {
+      controls.lock();
+      return;
+    }
 
     switch (e.key) {
-      case "Escape":
-        controls.unlock();
-        break;
       case "a":
       case "ArrowLeft":
         scene.trainDriver.ponderPreviousStop();
@@ -71,6 +78,10 @@ export const initUI = ({
   });
 
   document.addEventListener("keyup", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+    }
+
     if (!controls.isLocked) return;
 
     switch (e.key) {
@@ -82,17 +93,19 @@ export const initUI = ({
     }
   });
 
-  //   const instructions = document.getElementById("instructions");
   const crosshair = document.getElementById("crossHair");
+  const gui = document.getElementById("gui");
 
   controls.addEventListener("lock", () => {
-    // instructions.innerHTML = "Press escape to select a stop";
     crosshair.style.display = "flex";
+    outOfFocusOverlay.style.display = "none";
+    gui.style.display = "flex";
   });
 
   controls.addEventListener("unlock", () => {
-    // instructions.innerHTML = "Select a stop";
     crosshair.style.display = "none";
+    outOfFocusOverlay.style.display = "flex";
+    gui.style.display = "none";
   });
 
   // select stop buttons

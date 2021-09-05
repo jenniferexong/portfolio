@@ -18,7 +18,7 @@ export const createScene = async (gltfUrl) => {
 
   // lighting
   {
-    const hemisphere = new THREE.HemisphereLight("white", "black", 0.4);
+    const hemisphere = new THREE.HemisphereLight("white", "black", 0.2);
     const ambient = new THREE.AmbientLight("white", 0.1);
     scene.add(ambient);
     const sun = new THREE.PointLight("#e8dba8", 1);
