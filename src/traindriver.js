@@ -7,16 +7,16 @@ export const Direction = { FORWARD: 1, BACKWARD: -1, STATIONARY: 0 };
 const MAX_SPEED = 0.7;
 const DECELERATION_RANGE = 0.25;
 const STOP_RANGE = 0.05;
+const RANGE = 0.1;
 const ACCELERATION = 1.1;
-const START_POSITION = 9.5;
+export const START_POSITION = 9.5;
 
 export const createTrainDriver = (train) => {
   const track = createTrack();
-  const stopManager = {
+  const stopInfo = {
+    lastVisited: "controls",
     currentStop: "",
-    previousStop: "",
     hoveredStop: "aboutMe",
-    previousHoveredStop: "aboutMe",
     targetStop: "",
   };
 
@@ -35,16 +35,16 @@ export const createTrainDriver = (train) => {
    * @param {String} stopName Stop to lock in
    */
   const setTargetStop = (stopName) => {
-    stopManager.targetStop = stopName;
+    stopInfo.targetStop = stopName;
 
     // get route to next stop
     const route = track.calculateRoute(
       train.getCurrentTime(),
-      track.getStopLoc(stopManager.targetStop)
+      track.getStopLoc(stopInfo.targetStop)
     );
 
     if (route.remainingDistance < STOP_RANGE) {
-      setArrived();
+      removeRoute();
       return;
     }
 
@@ -59,20 +59,15 @@ export const createTrainDriver = (train) => {
   };
 
   const ponderNextStop = () => {
-    stopManager.previousHoveredStop = stopManager.hoveredStop;
-    stopManager.hoveredStop = track.getStop(stopManager.hoveredStop).next.name;
+    stopInfo.hoveredStop = track.getStop(stopInfo.hoveredStop).next.name;
   };
 
   const ponderPreviousStop = () => {
-    stopManager.previousHoveredStop = stopManager.hoveredStop;
-    stopManager.hoveredStop = track.getStop(
-      stopManager.hoveredStop
-    ).previous.name;
+    stopInfo.hoveredStop = track.getStop(stopInfo.hoveredStop).previous.name;
   };
 
   const driveInDirection = (newDirection) => {
-    stopManager.targetStop = "";
-    remainingDistance = 0;
+    removeRoute();
 
     // if change of direction, reset speed
     if (newDirection !== direction) speed = 0;
@@ -89,9 +84,9 @@ export const createTrainDriver = (train) => {
    * Removes target stop and remaining distance, but lets train come
    * to a stop by itself
    */
-  const setArrived = () => {
+  const removeRoute = () => {
     remainingDistance = 0;
-    stopManager.targetStop = "";
+    stopInfo.targetStop = "";
   };
 
   const driveTrain = (delta) => {
@@ -103,10 +98,10 @@ export const createTrainDriver = (train) => {
     train.update(delta);
 
     // If moving to a determined target, decrement remaining distance
-    if (stopManager.targetStop !== "") {
-      // Close to stop, but not there within 0.1 raage
+    if (stopInfo.targetStop !== "") {
+      // About to arrive to stop
       if (remainingDistance < STOP_RANGE) {
-        setArrived();
+        removeRoute();
       } else if (remainingDistance < DECELERATION_RANGE) {
         // deceleration needed to come to a stop after travelling remaining distance
         acceleration = -Math.pow(speed, 2) / (remainingDistance * 2);
@@ -115,32 +110,53 @@ export const createTrainDriver = (train) => {
       remainingDistance -= Math.abs(delta * speed);
     }
 
-    // the current stop
-    const stop = track.getStop(stopManager.currentStop);
+    setLastVisited();
+  };
 
-    // check for current stop
-    // check previous and next stop distance
+  /**
+   * Checks if the train is near a stop
+   */
+  const setLastVisited = () => {
+    // the current stop
+    const stop = track.getStop(stopInfo.lastVisited);
+    console.log(stop.name);
+
+    // distance to stop that was last visited
+    let dist = track.calculateRoute(
+      train.getCurrentTime(),
+      stop.location
+    ).remainingDistance;
+
+    // distance to the stop after last visited
     let distNext = track.calculateRoute(
       train.getCurrentTime(),
       stop.next.location
     ).remainingDistance;
 
+    // distance to the stop before last visited
     let distPrev = track.calculateRoute(
       train.getCurrentTime(),
       stop.previous.location
     ).remainingDistance;
 
-    if (distNext < DECELERATION_RANGE) {
-      stopManager.previousStop = stopManager.currentStop;
-      stopManager.currentStop = stop.next.name;
-    } else if (distPrev < DECELERATION_RANGE) {
-      stopManager.previousStop = stopManager.currentStop;
-      stopManager.currentStop = stop.previous.name;
+    if (dist < RANGE) {
+      stopInfo.lastVisited = stop.name;
+      stopInfo.currentStop = stop.name;
+    } else if (distNext < RANGE) {
+      stopInfo.lastVisited = stop.next.name;
+      stopInfo.currentStop = stop.next.name;
+    } else if (distPrev < RANGE) {
+      stopInfo.lastVisited = stop.previous.name;
+      stopInfo.currentStop = stop.previous.name;
+    } else {
+      // not close to any stop
+      stopInfo.currentStop = "";
     }
   };
 
   return {
-    stopManager,
+    stopInfo,
+    track,
 
     position: () => mesh.position,
     update: driveTrain,
@@ -151,6 +167,6 @@ export const createTrainDriver = (train) => {
     releasePedal,
 
     // set hovered stop as target
-    lockInStop: () => setTargetStop(stopManager.hoveredStop),
+    lockInStop: () => setTargetStop(stopInfo.hoveredStop),
   };
 };

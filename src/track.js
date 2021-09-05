@@ -1,6 +1,6 @@
 import { createStop } from "./stop.js";
 import { linkStops } from "./stop.js";
-import { Direction } from "./traindriver";
+import { Direction, START_POSITION } from "./traindriver";
 
 /**
  * Think of train track as a circle, where each stop is located
@@ -11,8 +11,8 @@ export const createTrack = () => {
   // length of the track in action.time steps
   const circumference = 10.0;
   const stops = {
-    aboutMe: createStop("aboutMe", 1.65),
-    bunnyGame: createStop("bunnyGame", 3.5),
+    aboutMe: createStop("aboutMe", 1.6),
+    bunnyGame: createStop("bunnyGame", 3.45),
     ribbleChat: createStop("ribbleChat", 4.95),
     workExperience: createStop("workExperience", 5.95),
     education: createStop("education", 6.95),
@@ -22,9 +22,9 @@ export const createTrack = () => {
   linkStops(Object.values(stops));
 
   // Used when user first enters the website - the controls 'stop'
-  const ghostStop = createStop("controls", 0);
-  ghostStop.next = stops.aboutMe;
-  ghostStop.previous = stops.contact;
+  const controlsStop = createStop("controls", START_POSITION);
+  controlsStop.next = stops.aboutMe;
+  controlsStop.previous = stops.contact;
 
   /**
    * Calculates the shortest distance from one point on the circumference to another.
@@ -61,7 +61,8 @@ export const createTrack = () => {
 
   return {
     getStopLoc: (stopName) => stops[stopName].location,
-    getStop: (name) => (name === "" ? ghostStop : stops[name]),
+    getStop: (name) => (name === "controls" ? controlsStop : stops[name]),
     calculateRoute,
+    getStopNames: () => Object.keys(stops),
   };
 };

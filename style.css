@@ -94,17 +94,14 @@ body {
   color: rgba(0, 0, 0, 0.4);
 }
 
-.stopButtons:hover {
-  color: black;
-}
-
-.selected {
+.current {
   border: solid black;
   color: black;
 }
 
-.selected:hover {
-  color: white;
+.target {
+  border: solid rgb(135, 255, 135);
+  color: rgb(135, 255, 135);
 }
 
 .hovered {
