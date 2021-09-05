@@ -1,9 +1,10 @@
-import * as THREE from "three";
+import { myAlert } from "./UI.js";
 class Interactable {
   onClick() {}
   onHover() {}
   offHover() {}
 }
+
 export const initInteractables = (interactive) => {
   const interactable = {};
 
@@ -41,7 +42,7 @@ export const initInteractables = (interactive) => {
         );
         break;
       case "i_email_button":
-        interactable[key] = new Button(interactive["i_email_text"]);
+        interactable[key] = new EmailButton(interactive["i_email_text"]);
         break;
     }
   }
@@ -103,6 +104,13 @@ class Button extends Interactable {
     );
 
     this.icon.updateMatrix();
+  }
+}
+
+class EmailButton extends Button {
+  onClick() {
+    navigator.clipboard.writeText("jennifer.ex.ong@gmail.com");
+    myAlert("Copied to clipboard");
   }
 }
 

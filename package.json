@@ -16,6 +16,7 @@
     "transform": {}
   },
   "dependencies": {
+    "sweetalert": "^2.1.2",
     "three": "^0.130.1"
   }
 }

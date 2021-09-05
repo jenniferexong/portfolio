@@ -1,4 +1,8 @@
+import swal from "sweetalert";
 import { Direction } from "./track.js";
+
+export let myAlert;
+
 // handles all ui functionality
 export const initUI = ({
   renderer,
@@ -27,6 +31,7 @@ export const initUI = ({
       mousePicker.onClick();
     } else {
       controls.lock();
+      showHud();
     }
   });
 
@@ -96,26 +101,30 @@ export const initUI = ({
   const crosshair = document.getElementById("crossHair");
   const gui = document.getElementById("gui");
 
-  controls.addEventListener("lock", () => {
+  const showHud = () => {
     crosshair.style.display = "flex";
     outOfFocusOverlay.style.display = "none";
     gui.style.display = "flex";
-  });
+  };
 
-  controls.addEventListener("unlock", () => {
+  const hideHud = () => {
     crosshair.style.display = "none";
     outOfFocusOverlay.style.display = "flex";
     gui.style.display = "none";
+  };
+
+  controls.addEventListener("unlock", () => {
+    hideHud();
   });
 
-  // select stop buttons
-  const buttons = document.getElementsByClassName("stopButtons");
-  for (const button of buttons) {
-    button.addEventListener("click", (e) => {
-      scene.selectStop(e.target.id);
-      controls.lock();
-    });
-  }
+  controls.addEventListener("lock", () => {
+    showHud();
+  });
+
+  myAlert = (message) => {
+    swal(message, { className: "alert" });
+    controls.unlock();
+  };
 };
 
 export const onProgress = (progressEvent) => {
@@ -125,4 +134,5 @@ export const onProgress = (progressEvent) => {
 
 export const onLoad = () => {
   document.getElementById("loadingScreen").style.display = "none";
+  document.getElementById("outOfFocus").style.display = "flex";
 };
