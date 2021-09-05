@@ -1,15 +1,13 @@
 import * as THREE from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { createTrack } from "./track.js";
-
-export const Direction = { FORWARD: 1, BACKWARD: -1, STATIONARY: 0 };
+import { Direction, START_POSITION } from "./track.js";
 
 const MAX_SPEED = 0.7;
 const DECELERATION_RANGE = 0.25;
 const STOP_RANGE = 0.05;
 const RANGE = 0.1;
 const ACCELERATION = 1.1;
-export const START_POSITION = 9.5;
 
 export const createTrainDriver = (train) => {
   const track = createTrack();
@@ -55,7 +53,6 @@ export const createTrainDriver = (train) => {
     acceleration = ACCELERATION;
     direction = route.direction;
     remainingDistance = route.remainingDistance;
-    console.log(remainingDistance);
   };
 
   const ponderNextStop = () => {
@@ -119,7 +116,6 @@ export const createTrainDriver = (train) => {
   const setLastVisited = () => {
     // the current stop
     const stop = track.getStop(stopInfo.lastVisited);
-    console.log(stop.name);
 
     // distance to stop that was last visited
     let dist = track.calculateRoute(

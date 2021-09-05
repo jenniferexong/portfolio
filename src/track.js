@@ -1,6 +1,8 @@
 import { createStop } from "./stop.js";
 import { linkStops } from "./stop.js";
-import { Direction, START_POSITION } from "./traindriver";
+
+export const Direction = { FORWARD: 1, BACKWARD: -1, STATIONARY: 0 };
+export const START_POSITION = 9.5;
 
 /**
  * Think of train track as a circle, where each stop is located
@@ -41,6 +43,8 @@ export const createTrack = () => {
       direction = Direction.FORWARD;
     } else if (diff < 0) {
       direction = Direction.BACKWARD;
+    } else {
+      direction = Direction.STATIONARY;
     }
 
     // get shortest distance between current location and

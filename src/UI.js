@@ -1,4 +1,4 @@
-import { Direction } from "./traindriver.js";
+import { Direction } from "./track.js";
 // handles all ui functionality
 export const initUI = ({
   renderer,
@@ -32,7 +32,6 @@ export const initUI = ({
 
   // Key event
   document.addEventListener("keydown", (e) => {
-    if (e.repeat) return;
     if (e.key === "Tab") {
       e.preventDefault();
     }
@@ -42,15 +41,6 @@ export const initUI = ({
     switch (e.key) {
       case "Escape":
         controls.unlock();
-        break;
-      case "w":
-      case "ArrowUp":
-        scene.trainDriver.driveInDirection(Direction.FORWARD);
-        break;
-      case "s":
-      case "ArrowDown":
-        scene.trainDriver.driveInDirection(Direction.BACKWARD);
-        console.log("down");
         break;
       case "a":
       case "ArrowLeft":
@@ -64,6 +54,19 @@ export const initUI = ({
       case "Enter":
         scene.trainDriver.lockInStop();
         break;
+    }
+
+    if (!e.repeat) {
+      switch (e.key) {
+        case "w":
+        case "ArrowUp":
+          scene.trainDriver.driveInDirection(Direction.FORWARD);
+          break;
+        case "s":
+        case "ArrowDown":
+          scene.trainDriver.driveInDirection(Direction.BACKWARD);
+          break;
+      }
     }
   });
 
