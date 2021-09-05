@@ -10,6 +10,39 @@ body {
   margin: 0;
 }
 
+#outOfFocus {
+  position: fixed;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(0, 0, 0, 0.6);
+}
+
+.instructions {
+  color: white;
+  font-size: 2em;
+}
+
+#crossHair {
+  pointer-events: none;
+  position: fixed;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.pointer {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 3em;
+  font-weight: 100;
+}
+
 #loadingScreen {
   position: fixed;
   z-index: 3;
@@ -43,31 +76,21 @@ body {
   background-color: white;
 }
 
-.guiContainer {
+#gui {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: none;
+  flex-direction: column-reverse;
   align-items: center;
   text-align: center;
   box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
   padding: 2em;
-  width: 15em;
-  height: 30em;
   z-index: 2;
-}
-
-#instructions {
-  font-size: 0.8em;
-  color: white;
-  font-weight: bold;
 }
 
 .buttonsContainer {
   display: flex;
-  flex-direction: column;
-  vertical-align: bottom;
-  padding: 0;
 }
 
 .stopButtons {
@@ -75,24 +98,80 @@ body {
   font-weight: 600;
   padding: 0.8em;
   margin-top: 1em;
+  margin-right: 1em;
   font-size: 1em;
   background-color: rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.4);
 }
 
-.stopButtons:hover {
+.current {
+  border: solid black;
   color: black;
 }
 
-.selected {
+.target {
+  border: solid rgb(64, 255, 0);
+  color: rgb(64, 255, 0);
+}
+
+.hovered {
   border: solid white;
   color: white;
 }
 
-.selected:hover {
-  color: white;
+.alert {
+  background-color: white;
 }
 
-#exit {
-  display: none;
+.fade-in {
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 2s;
+  -moz-animation: fadeIn ease 2s;
+  -o-animation: fadeIn ease 2s;
+  -ms-animation: fadeIn ease 2s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

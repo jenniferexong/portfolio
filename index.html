@@ -4,29 +4,42 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
     <link rel="stylesheet" type="text/css" href="./style.css" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0"
+    />
     <title>Portfolio</title>
   </head>
   <body>
     <div id="app">
-        <div id="loadingScreen">
-            <h1 id="loadingLabel">Loading...</h1>
-            <div id="loadingBox">
-                <div id="loadingProgress"></div>
-            </div>
+      <div id="loadingScreen">
+        <h1 id="loadingLabel">Loading...</h1>
+        <div id="loadingBox">
+          <div id="loadingProgress"></div>
         </div>
-        <div class="guiContainer">
-            <label id="instructions">Select a stop</label>
-            <ul class="buttonsContainer">
-                <button class="stopButtons selected" id="aboutMe">About Me</button>
-                <button class="stopButtons hovered" id="bunnyGame">Bunny Game</button>
-                <button class="stopButtons" id="ribbleChat">Ribble Chat</button>
-                <button class="stopButtons" id="workHistory">Work History</button>
-                <button class="stopButtons" id="education">Education</button>
-                <button class="stopButtons" id="contact">Contact</button>
-            </ul>
-        </div>
+      </div>
+      <div id="crossHair">
+        <h2 class="pointer">+</h2>
+      </div>
+      <div id="outOfFocus">
+        <h3 class="instructions fade-in">Press any key to continue</h3>
+      </div>
+      <div id="gui">
+        <ul class="buttonsContainer">
+          <button class="stopButtons hovered" id="aboutMe">About Me</button>
+          <button class="stopButtons" id="bunnyGame">Project 1</button>
+          <button class="stopButtons" id="ribbleChat">Project 2</button>
+          <button class="stopButtons" id="workExperience">
+            Work Experience
+          </button>
+          <button class="stopButtons" id="education">Education</button>
+          <button class="stopButtons" id="contact">Contact</button>
+        </ul>
+      </div>
     </div>
+    <video id="demo" type="video/mp4" loop style="display: none">
+      <source src="./src/res/demo.mov" type="video/mp4" />
+    </video>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

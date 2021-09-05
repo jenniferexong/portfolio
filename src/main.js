@@ -1,7 +1,7 @@
-import CreateApp from "./App.js";
+import { createApp } from "./app.js";
 import { initUI } from "./UI.js";
 
-CreateApp().then((app) => {
+createApp().then((app) => {
   initUI(app);
   app.render();
 });
