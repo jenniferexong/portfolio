@@ -100,8 +100,8 @@ body {
 }
 
 .target {
-  border: solid rgb(135, 255, 135);
-  color: rgb(135, 255, 135);
+  border: solid rgb(0, 255, 229);
+  color: rgb(0, 255, 229);
 }
 
 .hovered {
