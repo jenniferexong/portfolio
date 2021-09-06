@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { clamp } from "three/src/math/MathUtils";
 import { createTrack } from "./track.js";
 import { Direction, START_POSITION } from "./track.js";
+import { updateButtons } from "./view.js";
 
 const MAX_SPEED = 0.7;
 const DECELERATION_RANGE = 0.25;

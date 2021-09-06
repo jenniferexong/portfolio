@@ -42,27 +42,26 @@ export const createScene = async (gltfUrl) => {
   const train = createTrain(gltf, "train", "trainAction");
   const trainDriver = createTrainDriver(train);
 
-  initObjects();
-  function initObjects() {
-    gltf.scene.traverse((node) => {
-      // shadows
-      if (node.isMesh) {
-        node.castShadow = true;
-        node.receiveShadow = true;
+  gltf.scene.traverse((node) => {
+    // shadows
+    if (node.isMesh) {
+      node.frustumCulled = false;
+      node.castShadow = true;
+      node.receiveShadow = true;
 
-        node.material.side = THREE.FrontSide; // back face culling
+      node.material.side = THREE.FrontSide; // back face culling
 
-        // interactive objects
-        if (node.name.startsWith("i_", 0)) {
-          interactiveObjects[node.name] = node;
-        }
-
-        if (node.name === "pause_icon") {
-          node.visible = false;
-        }
+      // interactive objects
+      if (node.name.startsWith("i_", 0)) {
+        interactiveObjects[node.name] = node;
       }
-    });
-  }
+
+      if (node.name === "pause_icon") {
+        node.visible = false;
+      }
+    }
+  });
+
   const screen = interactiveObjects["i_video_screen"];
   screen.material.side = THREE.DoubleSide;
   const video = document.getElementById("demo");

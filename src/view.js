@@ -20,7 +20,6 @@ export const createView = (camera, scene, renderer) => {
   renderScene = () => {
     if (playingVideo) return;
 
-    console.log("render");
     renderer.render(scene.getScene(), camera);
   };
 
@@ -29,7 +28,6 @@ export const createView = (camera, scene, renderer) => {
   playVideo = () => {
     playingVideo = true;
     requestId = requestAnimationFrame(playVideo);
-    console.log("video");
     renderer.render(scene.getScene(), camera);
   };
 

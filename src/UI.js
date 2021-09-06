@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import swal from "sweetalert";
 import { Direction } from "./track.js";
-import { playVideo, stopVideo, renderScene } from "./view.js";
+import { playVideo, stopVideo, renderScene, updateButtons } from "./view.js";
 
 export let myAlert;
 
@@ -66,14 +66,17 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
       case "a":
       case "ArrowLeft":
         scene.trainDriver.ponderPreviousStop();
+        updateButtons();
         break;
       case "d":
       case "ArrowRight":
         scene.trainDriver.ponderNextStop();
+        updateButtons();
         break;
       case " ":
       case "Enter":
         scene.trainDriver.lockInStop();
+        updateButtons();
         break;
     }
 

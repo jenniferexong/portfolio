@@ -7,7 +7,9 @@ export async function loadGltf(url) {
   const loader = new GLTFLoader();
 
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath("src/decoder/");
+  dracoLoader.setDecoderPath(
+    "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/"
+  );
   loader.setDRACOLoader(dracoLoader);
 
   const gltf = await loader.loadAsync(url, onProgress);
@@ -16,7 +18,5 @@ export async function loadGltf(url) {
   if (!gltf) {
     console.log(`gltf loading error: ${url}`);
   }
-  console.log("loaded:", url);
-
   return gltf;
 }
