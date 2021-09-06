@@ -22,6 +22,7 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
 
   video.addEventListener("pause", (e) => {
     stopVideo();
+    renderScene();
   });
 
   // window resize
