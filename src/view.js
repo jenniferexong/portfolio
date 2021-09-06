@@ -1,13 +1,41 @@
+export let updateButtons;
+export let renderScene;
+export let playVideo;
+export let stopVideo;
+
 /**
  * Handles the display of HTML elements, such as buttons
  * and overlays
  */
-export const createView = (scene) => {
+export const createView = (camera, scene, renderer) => {
   const stopInfo = scene.trainDriver.stopInfo;
   const track = scene.trainDriver.track;
 
-  const update = () => {
-    updateStopButtons();
+  let playingVideo = false;
+
+  /**
+   * Called when an animation is updated, or the camera moves.
+   * Shouldn't be called when the video is playing.
+   */
+  renderScene = () => {
+    if (playingVideo) return;
+
+    console.log("render");
+    renderer.render(scene.getScene(), camera);
+  };
+
+  let requestId;
+
+  playVideo = () => {
+    playingVideo = true;
+    requestId = requestAnimationFrame(playVideo);
+    console.log("video");
+    renderer.render(scene.getScene(), camera);
+  };
+
+  stopVideo = () => {
+    playingVideo = false;
+    cancelAnimationFrame(requestId);
   };
 
   // Stop buttons
@@ -17,7 +45,7 @@ export const createView = (scene) => {
     .getStopNames()
     .forEach((name) => (buttons[name] = document.getElementById(name)));
 
-  const updateStopButtons = () => {
+  updateButtons = () => {
     const { currentStop, hoveredStop, targetStop } = stopInfo;
 
     for (let [name, button] of Object.entries(buttons)) {
@@ -31,9 +59,5 @@ export const createView = (scene) => {
         button.classList.add("hovered");
       }
     }
-  };
-
-  return {
-    update,
   };
 };

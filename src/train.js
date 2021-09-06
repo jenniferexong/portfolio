@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { renderScene } from "./view";
 
 export const createTrain = (gltf, meshName, actionName) => {
   const mesh = gltf.scene.children.find((child) => child.name === meshName);
@@ -24,7 +25,10 @@ export const createTrain = (gltf, meshName, actionName) => {
   };
 
   const update = (delta) => {
-    if (mixer) mixer.update(delta);
+    if (mixer) {
+      mixer.update(delta);
+      if (action.timeScale !== 0) renderScene();
+    }
   };
 
   const setTime = (time) => {

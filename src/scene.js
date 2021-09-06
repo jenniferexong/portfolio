@@ -38,11 +38,6 @@ export const createScene = async (gltfUrl) => {
   const gltf = await loadGltf(gltfUrl);
   scene.add(gltf.scene);
 
-  const video = document.getElementById("demo");
-  const texture = new THREE.VideoTexture(video);
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-
   const interactiveObjects = {};
   const train = createTrain(gltf, "train", "trainAction");
   const trainDriver = createTrainDriver(train);
@@ -57,12 +52,6 @@ export const createScene = async (gltfUrl) => {
 
         node.material.side = THREE.FrontSide; // back face culling
 
-        // Set texture for video screen
-        if (node.name === "video_screen") {
-          node.material = new THREE.MeshBasicMaterial({ map: texture });
-          node.material.side = THREE.DoubleSide;
-        }
-
         // interactive objects
         if (node.name.startsWith("i_", 0)) {
           interactiveObjects[node.name] = node;
@@ -74,6 +63,20 @@ export const createScene = async (gltfUrl) => {
       }
     });
   }
+  const screen = interactiveObjects["i_video_screen"];
+  screen.material.side = THREE.DoubleSide;
+  const video = document.getElementById("demo");
+  const texture = new THREE.VideoTexture(video);
+  texture.encoding = THREE.sRGBEncoding;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
+  video.addEventListener("loadeddata", (e) => {
+    if (video.readyState >= 3) {
+      screen.material = new THREE.MeshBasicMaterial({ map: texture });
+      screen.material.side = THREE.DoubleSide;
+    }
+  });
 
   const interactable = initInteractables(interactiveObjects);
 

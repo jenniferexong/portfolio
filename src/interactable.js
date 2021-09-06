@@ -8,7 +8,7 @@ class Interactable {
 export const initInteractables = (interactive) => {
   const interactable = {};
 
-  for (const [key, value] of Object.entries(interactive)) {
+  for (const key of Object.keys(interactive)) {
     switch (key) {
       case "i_play_button":
         interactable[key] = new PlayButton(

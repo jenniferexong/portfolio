@@ -1,19 +1,28 @@
+import * as THREE from "three";
 import swal from "sweetalert";
 import { Direction } from "./track.js";
+import { playVideo, stopVideo, renderScene } from "./view.js";
 
 export let myAlert;
 
 // handles all ui functionality
-export const initUI = ({
-  renderer,
-  camera,
-  render,
-  scene,
-  controls,
-  mousePicker,
-}) => {
-  // attach renderer to window
+export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
   document.body.appendChild(renderer.domElement);
+
+  controls.addEventListener("change", () => {
+    mousePicker.onHover();
+    renderScene();
+  });
+
+  const video = document.getElementById("demo");
+
+  video.addEventListener("play", (e) => {
+    playVideo();
+  });
+
+  video.addEventListener("pause", (e) => {
+    stopVideo();
+  });
 
   // window resize
   window.addEventListener("resize", onWindowResize, false);
@@ -22,7 +31,7 @@ export const initUI = ({
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
+    renderScene();
   }
 
   // Click event
