@@ -76,6 +76,10 @@ body {
   background-color: white;
 }
 
+.firefox {
+  color: white;
+}
+
 #gui {
   position: absolute;
   display: none;
