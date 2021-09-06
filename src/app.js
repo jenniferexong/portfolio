@@ -34,6 +34,8 @@ export const createApp = async () => {
 
   // wait for entire scene to load
   const scene = await createScene(url);
+  scene.add(controls.getObject());
+
   const mousePicker = createMousePicker(camera, scene);
   const view = createView(camera, scene, renderer);
 

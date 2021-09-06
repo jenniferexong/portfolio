@@ -138,13 +138,3 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
     controls.unlock();
   };
 };
-
-export const onProgress = (progressEvent) => {
-  let percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
-  document.getElementById("loadingProgress").style.width = `${percent}%`;
-};
-
-export const onLoad = () => {
-  document.getElementById("loadingScreen").style.display = "none";
-  document.getElementById("outOfFocus").style.display = "flex";
-};
