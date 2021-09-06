@@ -1,19 +1,28 @@
+import * as THREE from "three";
 import swal from "sweetalert";
 import { Direction } from "./track.js";
+import { playVideo, stopVideo, renderScene, updateButtons } from "./view.js";
 
 export let myAlert;
 
 // handles all ui functionality
-export const initUI = ({
-  renderer,
-  camera,
-  render,
-  scene,
-  controls,
-  mousePicker,
-}) => {
-  // attach renderer to window
+export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
   document.body.appendChild(renderer.domElement);
+
+  controls.addEventListener("change", () => {
+    mousePicker.onHover();
+    renderScene();
+  });
+
+  const video = document.getElementById("demo");
+
+  video.addEventListener("play", (e) => {
+    playVideo();
+  });
+
+  video.addEventListener("pause", (e) => {
+    stopVideo();
+  });
 
   // window resize
   window.addEventListener("resize", onWindowResize, false);
@@ -22,7 +31,7 @@ export const initUI = ({
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
+    renderScene();
   }
 
   // Click event
@@ -57,14 +66,17 @@ export const initUI = ({
       case "a":
       case "ArrowLeft":
         scene.trainDriver.ponderPreviousStop();
+        updateButtons();
         break;
       case "d":
       case "ArrowRight":
         scene.trainDriver.ponderNextStop();
+        updateButtons();
         break;
       case " ":
       case "Enter":
         scene.trainDriver.lockInStop();
+        updateButtons();
         break;
     }
 
@@ -125,14 +137,4 @@ export const initUI = ({
     swal(message, { className: "alert" });
     controls.unlock();
   };
-};
-
-export const onProgress = (progressEvent) => {
-  let percent = ((progressEvent.loaded / progressEvent.total) * 100) | 0;
-  document.getElementById("loadingProgress").style.width = `${percent}%`;
-};
-
-export const onLoad = () => {
-  document.getElementById("loadingScreen").style.display = "none";
-  document.getElementById("outOfFocus").style.display = "flex";
 };

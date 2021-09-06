@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { createScene } from "./scene.js";
 import { createMousePicker } from "./mousepicker.js";
 import { createView } from "./view.js";
-import url from "./res/model/world.glb?url";
+import url from "../res/model/world.glb?url";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
@@ -10,6 +10,7 @@ export const createApp = async () => {
   const clock = new THREE.Clock();
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
+    powerPreference: "high-performance",
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
@@ -22,7 +23,7 @@ export const createApp = async () => {
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    45
   );
   camera.position.z = 5;
   camera.position.y = 2;
@@ -33,22 +34,18 @@ export const createApp = async () => {
 
   // wait for entire scene to load
   const scene = await createScene(url);
+  scene.add(controls.getObject());
+
   const mousePicker = createMousePicker(camera, scene);
-  const view = createView(scene);
+  const view = createView(camera, scene, renderer);
 
-  function render() {
-    requestAnimationFrame(render);
-
-    mousePicker.onHover();
-
+  function update() {
+    requestAnimationFrame(update);
     // update scene
     scene.update(clock.getDelta());
     // update camera position
     const pos = scene.getTrainPos();
     camera.position.set(pos.x, pos.y + 0.5, pos.z);
-
-    renderer.render(scene.getScene(), camera);
-    view.update();
   }
 
   return {
@@ -57,7 +54,7 @@ export const createApp = async () => {
     scene,
     controls,
     mousePicker,
-    render,
+    update,
 
     addToScene: (elem) => scene.add(elem),
   };

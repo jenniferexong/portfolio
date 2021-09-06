@@ -8,7 +8,7 @@ class Interactable {
 export const initInteractables = (interactive) => {
   const interactable = {};
 
-  for (const [key, value] of Object.entries(interactive)) {
+  for (const key of Object.keys(interactive)) {
     switch (key) {
       case "i_play_button":
         interactable[key] = new PlayButton(
@@ -32,7 +32,7 @@ export const initInteractables = (interactive) => {
       case "i_linkedin_button":
         interactable[key] = new LinkButton(
           interactive["i_linkedin_text"],
-          "https://www.linkedin.com/in/jennifer-ong-899a6a14a/"
+          "https://www.linkedin.com/in/jenniferexong"
         );
         break;
       case "i_github_button":
