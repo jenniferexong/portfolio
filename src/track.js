@@ -16,7 +16,7 @@ export const createTrack = () => {
     aboutMe: createStop("aboutMe", 1.6),
     bunnyGame: createStop("bunnyGame", 3.45),
     ribbleChat: createStop("ribbleChat", 4.95),
-    workExperience: createStop("workExperience", 5.95),
+    workExperience: createStop("workExperience", 5.98),
     education: createStop("education", 6.95),
     contact: createStop("contact", 8.19),
   };
