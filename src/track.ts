@@ -1,18 +1,39 @@
-import { createStop } from "./stop.js";
-import { linkStops } from "./stop.js";
+import { Stop, StopName, createStop, linkStops } from "./stop";
 
-export const Direction = { FORWARD: 1, BACKWARD: -1, STATIONARY: 0 };
+export interface Track {
+  getStopLoc: (stop: StopName) => TrackPosition;
+  getStop: (name: StopName) => Stop;
+  calculateRoute: (start: TrackPosition, end: TrackPosition) => Route;
+  getStopNames: () => string[];
+}
+
+type Route = {
+  remainingDistance: number;
+  direction: Direction;
+};
+
+export enum Direction {
+  Forward = 1,
+  Backward = -1,
+  Stationary = 0,
+}
+
 export const START_POSITION = 9.5;
+
+/** Number from 0 - 10 */
+export type TrackPosition = number;
 
 /**
  * Think of train track as a circle, where each stop is located
  * at some point on the circumference.
  * points on the circumference range from values in [0, length]
  */
-export const createTrack = () => {
+export const createTrack = (): Track => {
   // length of the track in action.time steps
   const circumference = 10.0;
-  const stops = {
+  const stops: { [key in StopName]: Stop } = {
+    // Used when user first enters the website - the controls 'stop'
+    controls: createStop("controls", START_POSITION),
     aboutMe: createStop("aboutMe", 1.6),
     bunnyGame: createStop("bunnyGame", 3.45),
     ribbleChat: createStop("ribbleChat", 4.95),
@@ -23,28 +44,26 @@ export const createTrack = () => {
 
   linkStops(Object.values(stops));
 
-  // Used when user first enters the website - the controls 'stop'
-  const controlsStop = createStop("controls", START_POSITION);
-  controlsStop.next = stops.aboutMe;
-  controlsStop.previous = stops.contact;
-
   /**
    * Calculates the shortest distance from one point on the circumference to another.
    * @param {float} currentPos
    * @param {float} targetPos
    * @returns Remaining distance to travel, and direction to travel
    */
-  const calculateRoute = (currentPos, targetPos) => {
+  const calculateRoute = (
+    currentPos: TrackPosition,
+    targetPos: TrackPosition
+  ): Route => {
     // find which direction is faster
     let diff = targetPos - currentPos;
 
     let direction;
     if (diff > 0) {
-      direction = Direction.FORWARD;
+      direction = Direction.Forward;
     } else if (diff < 0) {
-      direction = Direction.BACKWARD;
+      direction = Direction.Backward;
     } else {
-      direction = Direction.STATIONARY;
+      direction = Direction.Stationary;
     }
 
     // get shortest distance between current location and
@@ -64,8 +83,8 @@ export const createTrack = () => {
   };
 
   return {
-    getStopLoc: (stopName) => stops[stopName].location,
-    getStop: (name) => (name === "controls" ? controlsStop : stops[name]),
+    getStopLoc: (stop: StopName) => stops[stop].position,
+    getStop: (name: StopName): Stop => stops[name],
     calculateRoute,
     getStopNames: () => Object.keys(stops),
   };

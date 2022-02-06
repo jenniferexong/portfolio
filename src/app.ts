@@ -1,25 +1,37 @@
-import * as THREE from "three";
-import { createScene } from "./scene.js";
-import { createMousePicker } from "./mousepicker.js";
-import { createView } from "./view.js";
-import url from "../res/model/world.glb?url";
+import * as Three from "three";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
-export const createApp = async () => {
-  const clock = new THREE.Clock();
-  const renderer = new THREE.WebGLRenderer({
+import { createScene, Scene } from "./scene";
+import { createView } from "./view";
+import { createMousePicker, MousePicker } from "./mousepicker";
+
+import url from "./assets/model/world.glb?url";
+
+export interface App {
+  renderer: Three.Renderer;
+  camera: Three.PerspectiveCamera;
+  scene: Scene;
+  controls: PointerLockControls;
+  mousePicker: MousePicker;
+  update(): void;
+  addToScene(elem: Three.Object3D): void;
+}
+
+export const createApp = async (): Promise<App> => {
+  const clock = new Three.Clock();
+  const renderer = new Three.WebGLRenderer({
     antialias: true,
     powerPreference: "high-performance",
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.type = Three.PCFSoftShadowMap;
+  renderer.outputEncoding = Three.sRGBEncoding;
   renderer.setPixelRatio(window.devicePixelRatio);
 
   // camera
-  const camera = new THREE.PerspectiveCamera(
+  const camera = new Three.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
@@ -44,7 +56,7 @@ export const createApp = async () => {
     // update scene
     scene.update(clock.getDelta());
     // update camera position
-    const pos = scene.getTrainPos();
+    const pos = scene.getTrainCoords();
     camera.position.set(pos.x, pos.y + 0.5, pos.z);
   }
 
@@ -56,7 +68,7 @@ export const createApp = async () => {
     mousePicker,
     update,
 
-    addToScene: (elem) => scene.add(elem),
+    addToScene: (elem: Three.Object3D) => scene.add(elem),
   };
 };
 
