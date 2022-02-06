@@ -2,19 +2,26 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-export async function loadGltf(url) {
+export async function loadGltf(url: string) {
   const manager = new THREE.LoadingManager();
+  const progressBar = document.getElementById("loadingProgress");
+  if (!progressBar) throw new Error("#loadingProgress not found");
 
   manager.onStart = () => {};
 
   manager.onLoad = () => {
-    document.getElementById("loadingScreen").style.display = "none";
-    document.getElementById("outOfFocus").style.display = "flex";
+    const loadingScreen = document.getElementById("loadingScreen");
+    const outOfFocusOverlay = document.getElementById("outOfFocus");
+    if (!loadingScreen) throw new Error("#loadingScreen not found");
+    if (!outOfFocusOverlay) throw new Error("#outOfFocus not found");
+
+    loadingScreen.style.display = "none";
+    outOfFocusOverlay.style.display = "flex";
   };
 
   manager.onProgress = (url, itemsLoaded, itemsTotal) => {
     let percent = ((itemsLoaded / 16) * 100) | 0;
-    document.getElementById("loadingProgress").style.width = `${percent}%`;
+    progressBar.style.width = `${percent}%`;
   };
 
   // load the scene

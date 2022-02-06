@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import { createScene } from "./scene.js";
-import { createMousePicker } from "./mousepicker.js";
-import { createView } from "./view.js";
-import url from "../res/model/world.glb?url";
+import { createScene } from "./scene";
+import { createMousePicker } from "./mousepicker";
+import { createView } from "./view";
+import url from "./assets/model/world.glb?url";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import { Object3D } from "three";
 
 export const createApp = async () => {
   const clock = new THREE.Clock();
@@ -44,7 +45,7 @@ export const createApp = async () => {
     // update scene
     scene.update(clock.getDelta());
     // update camera position
-    const pos = scene.getTrainPos();
+    const pos = scene.getTrainCoords();
     camera.position.set(pos.x, pos.y + 0.5, pos.z);
   }
 
@@ -56,7 +57,7 @@ export const createApp = async () => {
     mousePicker,
     update,
 
-    addToScene: (elem) => scene.add(elem),
+    addToScene: (elem: Object3D) => scene.add(elem),
   };
 };
 

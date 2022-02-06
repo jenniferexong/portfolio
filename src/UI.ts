@@ -1,12 +1,27 @@
-import * as THREE from "three";
 import swal from "sweetalert";
-import { Direction } from "./track.js";
-import { playVideo, stopVideo, renderScene, updateButtons } from "./view.js";
+import { Direction } from "./track";
+import { playVideo, stopVideo, renderScene, updateButtons } from "./view";
+import { PerspectiveCamera, Renderer } from "three";
+import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import { MousePicker } from "./mousepicker";
+import { Scene } from "./scene";
 
-export let myAlert;
+export let myAlert: (message: string) => void;
 
 // handles all ui functionality
-export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
+export const initUI = ({
+  renderer,
+  camera,
+  scene,
+  controls,
+  mousePicker,
+}: {
+  renderer: Renderer;
+  camera: PerspectiveCamera;
+  scene: Scene;
+  controls: PointerLockControls;
+  mousePicker: MousePicker;
+}) => {
   document.body.appendChild(renderer.domElement);
 
   controls.addEventListener("change", () => {
@@ -15,6 +30,7 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
   });
 
   const video = document.getElementById("demo");
+  if (!video) throw new Error("#demo video not found");
 
   video.addEventListener("play", (e) => {
     playVideo();
@@ -46,6 +62,7 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
   });
 
   const outOfFocusOverlay = document.getElementById("outOfFocus");
+  if (!outOfFocusOverlay) throw new Error("#outOfFocus overlay not found");
 
   // Key event
   document.addEventListener("keydown", (e) => {
@@ -85,11 +102,11 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
       switch (e.key) {
         case "w":
         case "ArrowUp":
-          scene.trainDriver.driveInDirection(Direction.FORWARD);
+          scene.trainDriver.driveInDirection(Direction.Forward);
           break;
         case "s":
         case "ArrowDown":
-          scene.trainDriver.driveInDirection(Direction.BACKWARD);
+          scene.trainDriver.driveInDirection(Direction.Backward);
           break;
       }
     }
@@ -112,7 +129,10 @@ export const initUI = ({ renderer, camera, scene, controls, mousePicker }) => {
   });
 
   const crosshair = document.getElementById("crossHair");
+  if (!crosshair) throw new Error("crosshair not found");
+
   const gui = document.getElementById("gui");
+  if (!gui) throw new Error("gui not found");
 
   const showHud = () => {
     crosshair.style.display = "flex";

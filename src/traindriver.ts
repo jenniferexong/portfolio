@@ -1,8 +1,7 @@
-import * as THREE from "three";
 import { clamp } from "three/src/math/MathUtils";
-import { createTrack } from "./track.js";
-import { Direction, START_POSITION } from "./track.js";
-import { updateButtons } from "./view.js";
+import { Train } from "./train";
+import { createTrack, Direction, START_POSITION, Track } from "./track";
+import { StopName } from "stop";
 
 const MAX_SPEED = 0.7;
 const DECELERATION_RANGE = 0.25;
@@ -10,35 +9,57 @@ const STOP_RANGE = 0.05;
 const RANGE = 0.1;
 const ACCELERATION = 1.1;
 
-export const createTrainDriver = (train) => {
+type StopInfo = {
+  lastVisited: StopName;
+  hoveredStop: StopName;
+  currentStop?: StopName;
+  targetStop?: StopName;
+};
+
+export type TrainDriver = {
+  stopInfo: StopInfo;
+  track: Track;
+  update(delta: number): void;
+  setTargetStop(stopName: StopName): void;
+  ponderNextStop(): void;
+  ponderPreviousStop(): void;
+  driveInDirection(direction: Direction): void;
+  releasePedal(): void;
+
+  // set hovered stop as target
+  lockInStop(): void;
+};
+
+export const createTrainDriver = (train: Train): TrainDriver => {
   const track = createTrack();
-  const stopInfo = {
+
+  const stopInfo: StopInfo = {
     lastVisited: "controls",
-    currentStop: "",
+    currentStop: undefined,
     hoveredStop: "aboutMe",
-    targetStop: "",
+    targetStop: undefined,
   };
 
   let remainingDistance = 0;
 
   let speed = 0;
-  let direction = Direction.FORWARD;
+  let direction = Direction.Forward;
   let acceleration = 0;
 
   // set initial position of train
-  train.setTime(START_POSITION);
+  train.setPosition(START_POSITION);
   train.setSpeed(0);
 
   /**
    *
    * @param {String} stopName Stop to lock in
    */
-  const setTargetStop = (stopName) => {
-    stopInfo.targetStop = stopName;
+  const setTargetStop = (stop: StopName) => {
+    stopInfo.targetStop = stop;
 
     // get route to next stop
     const route = track.calculateRoute(
-      train.getCurrentTime(),
+      train.getCurrentPosition(),
       track.getStopLoc(stopInfo.targetStop)
     );
 
@@ -64,7 +85,7 @@ export const createTrainDriver = (train) => {
     stopInfo.hoveredStop = track.getStop(stopInfo.hoveredStop).previous.name;
   };
 
-  const driveInDirection = (newDirection) => {
+  const driveInDirection = (newDirection: Direction) => {
     removeRoute();
 
     // if change of direction, reset speed
@@ -84,10 +105,10 @@ export const createTrainDriver = (train) => {
    */
   const removeRoute = () => {
     remainingDistance = 0;
-    stopInfo.targetStop = "";
+    stopInfo.targetStop = undefined;
   };
 
-  const driveTrain = (delta) => {
+  const driveTrain = (delta: number) => {
     // update train position based on current speed and acceleration
     speed += acceleration * delta;
     speed = clamp(speed, 0, MAX_SPEED);
@@ -96,7 +117,7 @@ export const createTrainDriver = (train) => {
     train.update(delta);
 
     // If moving to a determined target, decrement remaining distance
-    if (stopInfo.targetStop !== "") {
+    if (stopInfo.targetStop) {
       // About to arrive to stop
       if (remainingDistance < STOP_RANGE) {
         removeRoute();
@@ -120,20 +141,20 @@ export const createTrainDriver = (train) => {
 
     // distance to stop that was last visited
     let dist = track.calculateRoute(
-      train.getCurrentTime(),
-      stop.location
+      train.getCurrentPosition(),
+      stop.position
     ).remainingDistance;
 
     // distance to the stop after last visited
     let distNext = track.calculateRoute(
-      train.getCurrentTime(),
-      stop.next.location
+      train.getCurrentPosition(),
+      stop.next.position
     ).remainingDistance;
 
     // distance to the stop before last visited
     let distPrev = track.calculateRoute(
-      train.getCurrentTime(),
-      stop.previous.location
+      train.getCurrentPosition(),
+      stop.previous.position
     ).remainingDistance;
 
     if (dist < RANGE) {
@@ -147,7 +168,7 @@ export const createTrainDriver = (train) => {
       stopInfo.currentStop = stop.previous.name;
     } else {
       // not close to any stop
-      stopInfo.currentStop = "";
+      stopInfo.currentStop = undefined;
     }
   };
 
@@ -155,7 +176,6 @@ export const createTrainDriver = (train) => {
     stopInfo,
     track,
 
-    position: () => mesh.position,
     update: driveTrain,
     setTargetStop,
     ponderNextStop,

@@ -1,52 +1,63 @@
-import { myAlert } from "./UI.js";
-class Interactable {
-  onClick() {}
-  onHover() {}
-  offHover() {}
+import { Mesh, Vector3 } from "three";
+import { myAlert } from "./UI";
+
+interface Interactable {
+  onClick?: () => void;
+  onHover?: () => void;
+  offHover?: () => void;
 }
 
-export const initInteractables = (interactive) => {
-  const interactable = {};
+export type Interactables = { [key: string]: Interactable };
+/**
+ * Raw interactive object data
+ */
+export type InteractableData = Map<string, Mesh<any, any>>;
+
+export const initInteractables = (
+  interactive: InteractableData
+): Interactables => {
+  const interactables: Interactables = {};
 
   for (const key of Object.keys(interactive)) {
     switch (key) {
       case "i_play_button":
-        interactable[key] = new PlayButton(
-          interactive["i_play_icon"],
-          interactive["i_pause_icon"],
+        interactables[key] = new PlayButton(
+          interactive.get("i_play_icon")!,
+          interactive.get("i_pause_icon")!,
           "demo"
         );
         break;
       case "i_bunny_repo_button":
-        interactable[key] = new LinkButton(
-          interactive["i_bunny_repo_text"],
+        interactables[key] = new LinkButton(
+          interactive.get("i_bunny_repo_text")!,
+
           "https://github.com/jenniferexong/bunny-game"
         );
         break;
       case "i_ribble_repo_button":
-        interactable[key] = new LinkButton(
-          interactive["i_ribble_repo_text"],
+        interactables[key] = new LinkButton(
+          interactive.get("i_ribble_repo_text")!,
           "https://github.com/ribble-chat/ribble"
         );
         break;
       case "i_linkedin_button":
-        interactable[key] = new LinkButton(
-          interactive["i_linkedin_text"],
+        interactables[key] = new LinkButton(
+          interactive.get("i_linkedin_text")!,
           "https://www.linkedin.com/in/jenniferexong"
         );
         break;
       case "i_github_button":
-        interactable[key] = new LinkButton(
-          interactive["i_github_text"],
+        interactables[key] = new LinkButton(
+          interactive.get("i_github_text")!,
           "https://github.com/jenniferexong"
         );
         break;
       case "i_email_button":
-        interactable[key] = new EmailButton(interactive["i_email_text"]);
+        interactables[key] = new EmailButton(interactive.get("i_email_text")!);
         break;
     }
   }
-  return interactable;
+  return interactables;
 };
 
 // The scale of button icons when hovered over
@@ -55,55 +66,55 @@ const HOVER_SCALE = 1.25;
 /**
  * Button's text/icon increases in size on hover
  */
-class Button extends Interactable {
-  constructor(textOrIcon) {
-    super();
-    this.icon = textOrIcon;
+class Button implements Interactable {
+  initialScale: Vector3;
+  initialPos: Vector3;
 
-    this.initialScale = textOrIcon.scale.clone();
-    this.initialPos = textOrIcon.position.clone();
+  constructor(protected popoutMesh: Mesh) {
+    this.initialScale = popoutMesh.scale.clone();
+    this.initialPos = popoutMesh.position.clone();
   }
 
   /**
    * Increases the size of this button's icon
    */
   onHover() {
-    this.icon.position.set(0, 0, 0);
+    this.popoutMesh.position.set(0, 0, 0);
 
-    this.icon.scale.set(
+    this.popoutMesh.scale.set(
       this.initialScale.x * HOVER_SCALE,
       this.initialScale.y * HOVER_SCALE,
       this.initialScale.z * HOVER_SCALE
     );
 
-    this.icon.position.set(
+    this.popoutMesh.position.set(
       this.initialPos.x,
       this.initialPos.y,
       this.initialPos.z
     );
 
-    this.icon.updateMatrix();
+    this.popoutMesh.updateMatrix();
   }
 
   /**
    * Resets the size of this button's icon
    */
   offHover() {
-    this.icon.position.set(0, 0, 0);
+    this.popoutMesh.position.set(0, 0, 0);
 
-    this.icon.scale.set(
+    this.popoutMesh.scale.set(
       this.initialScale.x,
       this.initialScale.y,
       this.initialScale.z
     );
 
-    this.icon.position.set(
+    this.popoutMesh.position.set(
       this.initialPos.x,
       this.initialPos.y,
       this.initialPos.z
     );
 
-    this.icon.updateMatrix();
+    this.popoutMesh.updateMatrix();
   }
 }
 
@@ -114,20 +125,40 @@ class EmailButton extends Button {
   }
 }
 
+type VideoButtonData = {
+  object: Mesh;
+  scale: Vector3;
+  position: Vector3;
+  do(): void;
+};
+
 class PlayButton extends Button {
+  video: HTMLVideoElement;
+  pause: VideoButtonData;
+  play: VideoButtonData;
+  currentButton: VideoButtonData;
+
   /**
-   * @param {Object3D} playIcon Icon to be displayed when the video is paused
-   * @param {Object3D} pauseIcon Icon to be displayed when the video is playing
+   * @param {Mesh} playIcon Icon to be displayed when the video is paused
+   * @param {Mesh} pauseIcon Icon to be displayed when the video is playing
    * @param {String} videoId ID of the HTML video element
    */
-  constructor(playIcon, pauseIcon, videoId) {
+  constructor(
+    playIcon: Mesh,
+    private pauseIcon: Mesh,
+    private videoId: string
+  ) {
     super(playIcon);
 
     // hide pause button
     pauseIcon.visible = false;
-    this.icon = playIcon;
+    this.popoutMesh = playIcon;
 
-    this.video = document.getElementById(videoId);
+    const video = document.getElementById(videoId);
+    if (!video || !(video instanceof HTMLVideoElement))
+      throw new Error(`Video element with id ${videoId} not found`);
+
+    this.video = video;
 
     this.pause = {
       object: pauseIcon,
@@ -154,15 +185,15 @@ class PlayButton extends Button {
     this.currentButton = this.video.paused ? this.play : this.pause;
 
     // Hide previous button icon
-    this.icon.visible = false;
+    this.popoutMesh.visible = false;
 
     // Set new button information
-    this.icon = this.currentButton.object;
+    this.popoutMesh = this.currentButton.object;
     this.initialScale = this.currentButton.scale;
     this.initialPos = this.currentButton.position;
 
     // Show current button icon
-    this.icon.visible = true;
+    this.popoutMesh.visible = true;
   }
 }
 
@@ -170,12 +201,12 @@ class PlayButton extends Button {
  * A button that opens a link
  */
 class LinkButton extends Button {
-  constructor(textObj, url) {
-    super(textObj);
+  constructor(textMesh: Mesh, private url: string) {
+    super(textMesh);
     this.url = url;
   }
 
   onClick() {
-    window.open(this.url, "_blank").focus();
+    window.open(this.url, "_blank")?.focus();
   }
 }

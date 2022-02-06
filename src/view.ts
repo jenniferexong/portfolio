@@ -1,13 +1,20 @@
-export let updateButtons;
-export let renderScene;
-export let playVideo;
-export let stopVideo;
+import { Scene } from "scene";
+import { PerspectiveCamera, Renderer } from "three";
+
+export let updateButtons: () => void;
+export let renderScene: () => void;
+export let playVideo: () => void;
+export let stopVideo: () => void;
 
 /**
  * Handles the display of HTML elements, such as buttons
  * and overlays
  */
-export const createView = (camera, scene, renderer) => {
+export const createView = (
+  camera: PerspectiveCamera,
+  scene: Scene,
+  renderer: Renderer
+) => {
   const stopInfo = scene.trainDriver.stopInfo;
   const track = scene.trainDriver.track;
 
@@ -23,7 +30,7 @@ export const createView = (camera, scene, renderer) => {
     renderer.render(scene.getScene(), camera);
   };
 
-  let requestId;
+  let requestId: number;
 
   playVideo = () => {
     playingVideo = true;
@@ -37,24 +44,22 @@ export const createView = (camera, scene, renderer) => {
   };
 
   // Stop buttons
-  let buttons = {};
-
-  track
-    .getStopNames()
-    .forEach((name) => (buttons[name] = document.getElementById(name)));
+  const buttons = new Map(
+    track.getStopNames().map((name) => [name, document.getElementById(name)])
+  );
 
   updateButtons = () => {
     const { currentStop, hoveredStop, targetStop } = stopInfo;
 
-    for (let [name, button] of Object.entries(buttons)) {
-      button.setAttribute("class", "stopButtons");
+    for (const [name, button] of buttons) {
+      button?.setAttribute("class", "stopButtons");
 
       if (name === currentStop) {
-        button.classList.add("current");
+        button?.classList.add("current");
       } else if (name === targetStop) {
-        button.classList.add("target");
+        button?.classList.add("target");
       } else if (name === hoveredStop) {
-        button.classList.add("hovered");
+        button?.classList.add("hovered");
       }
     }
   };
