@@ -1,6 +1,6 @@
-import { Scene } from "scene";
-import * as THREE from "three";
-import { Camera, Object3D } from "three";
+import * as Three from "three";
+
+import { Scene } from "./scene";
 
 export interface MousePicker {
   onHover: () => void;
@@ -9,12 +9,12 @@ export interface MousePicker {
 
 // ray casting / mouse picking
 export const createMousePicker = (
-  camera: Camera,
+  camera: Three.PerspectiveCamera,
   scene: Scene
 ): MousePicker => {
   // location of the mouse in screen coordinates
-  const coords = new THREE.Vector2(0, 0);
-  const rayCaster = new THREE.Raycaster();
+  const coords = new Three.Vector2(0, 0);
+  const rayCaster = new Three.Raycaster();
 
   // Gets the names of objects that the mouse ray is intersecting
   function getIntersecting() {

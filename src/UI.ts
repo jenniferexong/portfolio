@@ -1,11 +1,16 @@
 import swal from "sweetalert";
-import { Direction } from "./track";
-import { playVideo, stopVideo, renderScene, updateButtons } from "./view";
+
 import { PerspectiveCamera, Renderer } from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-import { MousePicker } from "./mousepicker";
-import { Scene } from "./scene";
 
+import { Scene } from "./scene";
+import { Direction } from "./track";
+import { MousePicker } from "./mousepicker";
+import { playVideo, stopVideo, renderScene, updateButtons } from "./view";
+
+/**
+ * Opens an alert overlay with a given message
+ */
 export let myAlert: (message: string) => void;
 
 // handles all ui functionality

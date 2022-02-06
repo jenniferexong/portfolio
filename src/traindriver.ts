@@ -1,7 +1,8 @@
 import { clamp } from "three/src/math/MathUtils";
+
 import { Train } from "./train";
-import { createTrack, Direction, START_POSITION, Track } from "./track";
 import { StopName } from "stop";
+import { createTrack, Direction, START_POSITION, Track } from "./track";
 
 const MAX_SPEED = 0.7;
 const DECELERATION_RANGE = 0.25;

@@ -1,9 +1,10 @@
-import * as THREE from "three";
+import * as Three from "three";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 export async function loadGltf(url: string) {
-  const manager = new THREE.LoadingManager();
+  const manager = new Three.LoadingManager();
   const progressBar = document.getElementById("loadingProgress");
   if (!progressBar) throw new Error("#loadingProgress not found");
 
@@ -35,9 +36,7 @@ export async function loadGltf(url: string) {
 
   const gltf = await loader.loadAsync(url);
 
-  if (!gltf) {
-    console.log(`gltf loading error: ${url}`);
-  }
+  if (!gltf) throw new Error(`gltf loading error: ${url}`);
 
   return gltf;
 }

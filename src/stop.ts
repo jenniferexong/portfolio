@@ -1,4 +1,4 @@
-import type { TrackPosition } from "track";
+import type { TrackPosition } from "./track";
 
 export interface Stop {
   name: StopName;

@@ -1,4 +1,5 @@
 import { Mesh, Vector3 } from "three";
+
 import { myAlert } from "./UI";
 
 interface Interactable {
@@ -8,8 +9,9 @@ interface Interactable {
 }
 
 export type Interactables = { [key: string]: Interactable };
+
 /**
- * Raw interactive object data
+ * Raw interactable object data
  */
 export type InteractableData = Map<string, Mesh<any, any>>;
 

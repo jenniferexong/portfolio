@@ -1,5 +1,6 @@
-import { Scene } from "scene";
 import { PerspectiveCamera, Renderer } from "three";
+
+import { Scene } from "./scene";
 
 export let updateButtons: () => void;
 export let renderScene: () => void;
