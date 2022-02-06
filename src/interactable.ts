@@ -20,7 +20,7 @@ export const initInteractables = (
 ): Interactables => {
   const interactables: Interactables = {};
 
-  for (const key of Object.keys(interactive)) {
+  for (const key of interactive.keys()) {
     switch (key) {
       case "i_play_button":
         interactables[key] = new PlayButton(

@@ -69,7 +69,7 @@ export const createScene = async (gltfUrl: string): Promise<Scene> => {
         interactableData.set(node.name, node);
       }
 
-      if (node.name === "pause_icon") {
+      if (node.name === "i_pause_icon") {
         node.visible = false;
       }
     }
