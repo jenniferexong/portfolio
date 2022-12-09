@@ -30,7 +30,7 @@ export async function loadGltf(url: string) {
 
   const dracoLoader = new DRACOLoader();
   dracoLoader.setDecoderPath(
-    "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/"
+    "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/"
   );
   loader.setDRACOLoader(dracoLoader);
 
