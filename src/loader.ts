@@ -21,7 +21,9 @@ export async function loadGltf(url: string) {
   };
 
   manager.onProgress = (url, itemsLoaded, itemsTotal) => {
-    let percent = ((itemsLoaded / 16) * 100) | 0;
+    // For some reason the loader doesn't fill the entire way,
+    // so hacking it with 106%
+    let percent = ((itemsLoaded / itemsTotal) * 106) | 0;
     progressBar.style.width = `${percent}%`;
   };
 

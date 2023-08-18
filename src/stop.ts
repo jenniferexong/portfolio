@@ -11,6 +11,7 @@ export interface Stop {
 export type StopName =
   | "aboutMe"
   | "bunnyGame"
+  | "split"
   | "ribbleChat"
   | "workExperience"
   | "education"

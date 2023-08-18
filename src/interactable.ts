@@ -36,6 +36,12 @@ export const initInteractables = (
           "https://github.com/jenniferexong/bunny-game"
         );
         break;
+      case "i_split_repo_button":
+        interactables[key] = new LinkButton(
+          interactive.get("i_split_repo_text")!,
+          "https://github.com/jenniferexong/split"
+        );
+        break;
       case "i_ribble_repo_button":
         interactables[key] = new LinkButton(
           interactive.get("i_ribble_repo_text")!,
