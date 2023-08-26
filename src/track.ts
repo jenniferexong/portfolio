@@ -20,20 +20,20 @@ export enum Direction {
 
 export const START_POSITION = 9.5;
 
-/** Number from 0 - 10 */
+/**
+ * Number from 0 - 10
+ */
 export type TrackPosition = number;
 
 /**
- * Think of train track as a circle, where each stop is located
- * at some point on the circumference.
- * points on the circumference range from values in [0, length]
+ * Think of train track as a circle, where each stop is located at some point on the circumference.
+ * Points on the circumference range from values in [0, length]
  */
 export const createTrack = (): Track => {
   // length of the track in action.time steps
   const circumference = 10.0;
   const stops: { [key in StopName]: Stop } = {
-    // Used when user first enters the website - the controls 'stop'
-    controls: createStop("controls", START_POSITION),
+    controls: createStop("controls", START_POSITION), // Used when user first enters the website - the 'controls' stop
     aboutMe: createStop("aboutMe", 1.6),
     bunnyGame: createStop("bunnyGame", 3.45),
     split: createStop("split", 4.68),
@@ -47,8 +47,6 @@ export const createTrack = (): Track => {
 
   /**
    * Calculates the shortest distance from one point on the circumference to another.
-   * @param {float} currentPos
-   * @param {float} targetPos
    * @returns Remaining distance to travel, and direction to travel
    */
   const calculateRoute = (

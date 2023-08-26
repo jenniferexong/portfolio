@@ -1,7 +1,7 @@
 import { clamp } from "three/src/math/MathUtils";
 
 import { Train } from "./train";
-import { StopName } from "stop";
+import { StopName } from "./stop";
 import { createTrack, Direction, START_POSITION, Track } from "./track";
 
 const MAX_SPEED = 0.7;
@@ -20,15 +20,16 @@ type StopInfo = {
 export type TrainDriver = {
   stopInfo: StopInfo;
   track: Track;
-  update(delta: number): void;
-  setTargetStop(stopName: StopName): void;
-  ponderNextStop(): void;
-  ponderPreviousStop(): void;
-  driveInDirection(direction: Direction): void;
-  releasePedal(): void;
-
-  // set hovered stop as target
-  lockInStop(): void;
+  update: (delta: number) => void;
+  setTargetStop: (stopName: StopName) => void;
+  ponderNextStop: VoidFunction;
+  ponderPreviousStop: VoidFunction;
+  driveManual: (direction: Direction) => void;
+  releasePedal: VoidFunction;
+  /**
+   * Set hovered stop as target.
+   */
+  lockInStop: VoidFunction;
 };
 
 export const createTrainDriver = (train: Train): TrainDriver => {
@@ -51,10 +52,6 @@ export const createTrainDriver = (train: Train): TrainDriver => {
   train.setPosition(START_POSITION);
   train.setSpeed(0);
 
-  /**
-   *
-   * @param {String} stopName Stop to lock in
-   */
   const setTargetStop = (stop: StopName) => {
     stopInfo.targetStop = stop;
 
@@ -71,7 +68,9 @@ export const createTrainDriver = (train: Train): TrainDriver => {
 
     // if change of direction, reset speed
     if (direction !== route.direction) speed = 0;
-    if (route.remainingDistance < DECELERATION_RANGE) speed = MAX_SPEED / 3;
+    if (route.remainingDistance < DECELERATION_RANGE) {
+      speed = MAX_SPEED / 3;
+    }
 
     acceleration = ACCELERATION;
     direction = route.direction;
@@ -86,7 +85,7 @@ export const createTrainDriver = (train: Train): TrainDriver => {
     stopInfo.hoveredStop = track.getStop(stopInfo.hoveredStop).previous.name;
   };
 
-  const driveInDirection = (newDirection: Direction) => {
+  const driveManual = (newDirection: Direction) => {
     removeRoute();
 
     // if change of direction, reset speed
@@ -134,7 +133,7 @@ export const createTrainDriver = (train: Train): TrainDriver => {
   };
 
   /**
-   * Checks if the train is near a stop
+   * Checks if the train is near a stop.
    */
   const setLastVisited = () => {
     // the current stop
@@ -181,7 +180,7 @@ export const createTrainDriver = (train: Train): TrainDriver => {
     setTargetStop,
     ponderNextStop,
     ponderPreviousStop,
-    driveInDirection,
+    driveManual: driveManual,
     releasePedal,
 
     // set hovered stop as target

@@ -7,32 +7,31 @@ import { renderScene, updateButtons } from "./view";
 export interface Train {
   mesh: Three.Mesh;
   action: Three.AnimationAction;
-
-  coordinates(): Three.Vector3;
-  getCurrentPosition(): number;
-  setPosition(position: TrackPosition): void;
-  setSpeed(speed: number): void;
-  update(delta: number): void;
+  getCoordinates: () => Three.Vector3;
+  getCurrentPosition: () => TrackPosition;
+  setPosition: (position: TrackPosition) => void;
+  setSpeed: (speed: number) => void;
+  update: (delta: number) => void;
 }
 
-export const createTrain = (
-  gltf: GLTF,
-  meshName: string,
-  actionName: string
-): Train => {
+const TRAIN_MESH_NAME = "train";
+const TRAIN_ACTION_NAME = "trainAction";
+
+export const createTrain = (gltf: GLTF): Train => {
   const mesh: Three.Object3D | undefined = gltf.scene.children.find(
-    (child) => child.name === meshName
+    (child) => child.name === TRAIN_MESH_NAME
   );
 
-  if (!mesh) throw new Error(`train mesh not found: ${meshName}`);
+  if (!mesh) throw new Error(`train mesh not found: ${TRAIN_MESH_NAME}`);
   if (!(mesh instanceof Three.Mesh)) throw new Error("train is not a mesh");
 
   // train animation
   const mixer = new Three.AnimationMixer(gltf.scene);
   const clips = gltf.animations;
-  const trainClip = Three.AnimationClip.findByName(clips, actionName);
+  const trainClip = Three.AnimationClip.findByName(clips, TRAIN_ACTION_NAME);
 
-  if (!trainClip) throw new Error(`train action not found: ${actionName}`);
+  if (!trainClip)
+    throw new Error(`train action not found: ${TRAIN_ACTION_NAME}`);
 
   const action = mixer.clipAction(trainClip);
 
@@ -59,10 +58,10 @@ export const createTrain = (
   };
 
   return {
-    mesh: mesh as Three.Mesh,
+    mesh,
     action,
 
-    coordinates: () => mesh.position,
+    getCoordinates: () => mesh.position,
     getCurrentPosition: () => action.time,
     setPosition,
     update,

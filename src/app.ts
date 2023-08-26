@@ -4,7 +4,8 @@ import { PointerLockControls } from "three/examples/jsm/controls/PointerLockCont
 
 import { createScene, Scene } from "./scene";
 import { createView } from "./view";
-import { createMousePicker, MousePicker } from "./mousepicker";
+import { createMousePicker, MousePicker } from "./mouse-picker";
+import { createRenderer } from "./renderer";
 
 import url from "./assets/model/world.glb?url";
 
@@ -14,21 +15,12 @@ export interface App {
   scene: Scene;
   controls: PointerLockControls;
   mousePicker: MousePicker;
-  update(): void;
-  addToScene(elem: Three.Object3D): void;
+  update: VoidFunction;
 }
 
 export const createApp = async (): Promise<App> => {
   const clock = new Three.Clock();
-  const renderer = new Three.WebGLRenderer({
-    antialias: true,
-    powerPreference: "high-performance",
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = Three.PCFSoftShadowMap;
-  renderer.outputEncoding = Three.sRGBEncoding;
-  renderer.setPixelRatio(window.devicePixelRatio);
+  const renderer = createRenderer();
 
   // camera
   const camera = new Three.PerspectiveCamera(
@@ -49,16 +41,16 @@ export const createApp = async (): Promise<App> => {
   scene.add(controls.getObject());
 
   const mousePicker = createMousePicker(camera, scene);
-  const view = createView(camera, scene, renderer);
+  createView(camera, scene, renderer);
 
-  function update() {
+  const update = () => {
     requestAnimationFrame(update);
     // update scene
     scene.update(clock.getDelta());
     // update camera position
     const pos = scene.getTrainCoords();
     camera.position.set(pos.x, pos.y + 0.5, pos.z);
-  }
+  };
 
   return {
     renderer,
@@ -67,8 +59,6 @@ export const createApp = async (): Promise<App> => {
     controls,
     mousePicker,
     update,
-
-    addToScene: (elem: Three.Object3D) => scene.add(elem),
   };
 };
 

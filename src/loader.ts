@@ -3,7 +3,7 @@ import * as Three from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
-export async function loadGltf(url: string) {
+export const loadGltf = async (url: string) => {
   const manager = new Three.LoadingManager();
   const progressBar = document.getElementById("loadingProgress");
   if (!progressBar) throw new Error("#loadingProgress not found");
@@ -20,7 +20,7 @@ export async function loadGltf(url: string) {
     outOfFocusOverlay.style.display = "flex";
   };
 
-  manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+  manager.onProgress = (_url, itemsLoaded, itemsTotal) => {
     // For some reason the loader doesn't fill the entire way,
     // so hacking it with 106%
     let percent = ((itemsLoaded / itemsTotal) * 106) | 0;
@@ -41,4 +41,4 @@ export async function loadGltf(url: string) {
   if (!gltf) throw new Error(`gltf loading error: ${url}`);
 
   return gltf;
-}
+};

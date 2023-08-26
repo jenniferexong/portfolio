@@ -3,9 +3,9 @@ import * as Three from "three";
 import { StopName } from "./stop";
 import { loadGltf } from "./loader";
 import { createTrain } from "./train";
-import { createTrainDriver, TrainDriver } from "./traindriver";
+import { createTrainDriver, TrainDriver } from "./train-driver";
 import {
-  initInteractables,
+  createInteractables,
   InteractableData,
   Interactables,
 } from "./interactable";
@@ -14,16 +14,14 @@ export interface Scene {
   interactableData: InteractableData;
   interactables: Interactables;
   trainDriver: TrainDriver;
-  add(elem: Three.Object3D): void;
-  selectStop(stopName: StopName): void;
-  getScene(): Three.Scene;
-  update(delta: number): void;
-  getTrainCoords(): Three.Vector3;
+  add: (elem: Three.Object3D) => void;
+  selectStop: (stopName: StopName) => void;
+  getScene: () => Three.Scene;
+  update: (delta: number) => void;
+  getTrainCoords: () => Three.Vector3;
 }
 
-export const createScene = async (gltfUrl: string): Promise<Scene> => {
-  const scene = new Three.Scene();
-
+const setupAtmosphere = (scene: Three.Scene) => {
   // background and fog
   const skyColor = "#77cacf";
   const near = 15;
@@ -44,20 +42,40 @@ export const createScene = async (gltfUrl: string): Promise<Scene> => {
   sun.shadow.mapSize.height = 1024 * 3;
   scene.add(sun);
   scene.add(hemisphere);
+};
 
-  // loads a scene from a gltf/glb file, setting shadows
-  // const manager = new THREE.LoadingManager();
-  // manager.onLoad = finishLoading;
+const setupVideo = (videoScreen: Three.Mesh<any, any>) => {
+  videoScreen.material.side = Three.DoubleSide;
+  const video = document.getElementById("demo") as HTMLVideoElement;
+  const texture = new Three.VideoTexture(video);
+  texture.encoding = Three.sRGBEncoding;
+  texture.minFilter = Three.LinearFilter;
+  texture.magFilter = Three.LinearFilter;
+
+  video.addEventListener("loadeddata", () => {
+    // Switch texture from thumbnail to video when video has loaded.
+    if (video.readyState >= 3) {
+      videoScreen.material = new Three.MeshBasicMaterial({ map: texture });
+      videoScreen.material.side = Three.DoubleSide;
+    }
+  });
+};
+
+export const createScene = async (gltfUrl: string): Promise<Scene> => {
+  const scene = new Three.Scene();
+
+  setupAtmosphere(scene);
+
   const gltf = await loadGltf(gltfUrl);
   scene.add(gltf.scene);
 
   const interactableData: InteractableData = new Map();
-  const train = createTrain(gltf, "train", "trainAction");
+  const train = createTrain(gltf);
   const trainDriver = createTrainDriver(train);
 
   gltf.scene.traverse((node) => {
-    // shadows
     if (node instanceof Three.Mesh) {
+      // shadows
       node.frustumCulled = false;
       node.castShadow = true;
       node.receiveShadow = true;
@@ -75,33 +93,21 @@ export const createScene = async (gltfUrl: string): Promise<Scene> => {
     }
   });
 
-  const screen = interactableData.get("i_video_screen");
-  if (!screen) throw new Error('Mesh "i_video_screen" not found');
+  const videoScreen = interactableData.get("i_video_screen");
+  if (!videoScreen) throw new Error('Mesh "i_video_screen" not found');
 
-  screen.material.side = Three.DoubleSide;
-  const video = document.getElementById("demo") as HTMLVideoElement;
-  const texture = new Three.VideoTexture(video);
-  texture.encoding = Three.sRGBEncoding;
-  texture.minFilter = Three.LinearFilter;
-  texture.magFilter = Three.LinearFilter;
+  setupVideo(videoScreen);
 
-  video.addEventListener("loadeddata", (e) => {
-    if (video.readyState >= 3) {
-      screen.material = new Three.MeshBasicMaterial({ map: texture });
-      screen.material.side = Three.DoubleSide;
-    }
-  });
-
-  const interactables = initInteractables(interactableData);
+  const interactables = createInteractables(interactableData);
 
   return {
     interactableData,
     interactables,
     trainDriver,
     add: (elem: Three.Object3D) => scene.add(elem),
-    selectStop: (stopName: StopName) => trainDriver.setTargetStop(stopName),
+    selectStop: trainDriver.setTargetStop,
     getScene: () => scene,
-    update: (delta: number) => trainDriver.update(delta),
-    getTrainCoords: () => train.coordinates(),
+    update: trainDriver.update,
+    getTrainCoords: train.getCoordinates,
   };
 };

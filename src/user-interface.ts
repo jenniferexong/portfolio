@@ -1,32 +1,21 @@
 import swal from "sweetalert";
 
-import { PerspectiveCamera, Renderer } from "three";
-import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-
-import { Scene } from "./scene";
 import { Direction } from "./track";
-import { MousePicker } from "./mousepicker";
-import { playVideo, stopVideo, renderScene, updateButtons } from "./view";
+import { App } from "./app";
+import { pauseVideo, playVideo, renderScene, updateButtons } from "./view";
 
 /**
  * Opens an alert overlay with a given message
  */
-export let myAlert: (message: string) => void;
+export let alert: (message: string) => void;
 
-// handles all ui functionality
-export const initUI = ({
+export const initializeUserInterface = ({
   renderer,
   camera,
   scene,
   controls,
   mousePicker,
-}: {
-  renderer: Renderer;
-  camera: PerspectiveCamera;
-  scene: Scene;
-  controls: PointerLockControls;
-  mousePicker: MousePicker;
-}) => {
+}: App) => {
   document.body.appendChild(renderer.domElement);
 
   controls.addEventListener("change", () => {
@@ -37,24 +26,14 @@ export const initUI = ({
   const video = document.getElementById("demo");
   if (!video) throw new Error("#demo video not found");
 
-  video.addEventListener("play", (e) => {
+  video.addEventListener("play", () => {
     playVideo();
   });
 
-  video.addEventListener("pause", (e) => {
-    stopVideo();
+  video.addEventListener("pause", () => {
+    pauseVideo();
     renderScene();
   });
-
-  // window resize
-  window.addEventListener("resize", onWindowResize, false);
-
-  function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderScene();
-  }
 
   // Click event
   document.addEventListener("click", (e) => {
@@ -65,6 +44,15 @@ export const initUI = ({
       showHud();
     }
   });
+
+  const onWindowResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderScene();
+  };
+
+  window.addEventListener("resize", onWindowResize, false);
 
   const outOfFocusOverlay = document.getElementById("outOfFocus");
   if (!outOfFocusOverlay) throw new Error("#outOfFocus overlay not found");
@@ -85,6 +73,7 @@ export const initUI = ({
       return;
     }
 
+    // Controls for automatic travel to a stop
     switch (e.key) {
       case "a":
       case "ArrowLeft":
@@ -103,15 +92,16 @@ export const initUI = ({
         break;
     }
 
+    // Controls for manual travel to a stop
     if (!e.repeat) {
       switch (e.key) {
         case "w":
         case "ArrowUp":
-          scene.trainDriver.driveInDirection(Direction.Forward);
+          scene.trainDriver.driveManual(Direction.Forward);
           break;
         case "s":
         case "ArrowDown":
-          scene.trainDriver.driveInDirection(Direction.Backward);
+          scene.trainDriver.driveManual(Direction.Backward);
           break;
       }
     }
@@ -151,15 +141,11 @@ export const initUI = ({
     gui.style.display = "none";
   };
 
-  controls.addEventListener("unlock", () => {
-    hideHud();
-  });
+  controls.addEventListener("unlock", hideHud);
 
-  controls.addEventListener("lock", () => {
-    showHud();
-  });
+  controls.addEventListener("lock", showHud);
 
-  myAlert = (message) => {
+  alert = (message) => {
     swal(message, { className: "alert" });
     controls.unlock();
   };
