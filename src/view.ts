@@ -2,14 +2,18 @@ import { PerspectiveCamera, Renderer } from "three";
 
 import { Scene } from "./scene";
 
+/**
+ * Updates the styling of the stop buttons based on the
+ * current position and travel of the train.
+ */
 export let updateButtons: () => void;
 export let renderScene: () => void;
 export let playVideo: () => void;
-export let stopVideo: () => void;
+export let pauseVideo: () => void;
 
 /**
  * Handles the display of HTML elements, such as buttons
- * and overlays
+ * and overlays.
  */
 export const createView = (
   camera: PerspectiveCamera,
@@ -39,7 +43,7 @@ export const createView = (
     renderer.render(scene.getScene(), camera);
   };
 
-  stopVideo = () => {
+  pauseVideo = () => {
     playingVideo = false;
     cancelAnimationFrame(requestId);
   };

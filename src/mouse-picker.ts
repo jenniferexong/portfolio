@@ -3,11 +3,11 @@ import * as Three from "three";
 import { Scene } from "./scene";
 
 export interface MousePicker {
-  onHover: () => void;
-  onClick: () => void;
+  onHover: VoidFunction;
+  onClick: VoidFunction;
 }
 
-// ray casting / mouse picking
+// Ray casting / mouse picking
 export const createMousePicker = (
   camera: Three.PerspectiveCamera,
   scene: Scene
@@ -17,7 +17,7 @@ export const createMousePicker = (
   const rayCaster = new Three.Raycaster();
 
   // Gets the names of objects that the mouse ray is intersecting
-  function getIntersecting() {
+  const getIntersecting = () => {
     rayCaster.setFromCamera(coords, camera);
     const intersecting = rayCaster.intersectObjects(
       Array.from(scene.interactableData.values()),
@@ -25,9 +25,9 @@ export const createMousePicker = (
     );
 
     return intersecting.map((i) => i.object.name);
-  }
+  };
 
-  function onHover() {
+  const onHover = () => {
     const intersects = getIntersecting();
     for (const [key, value] of Object.entries(scene.interactables)) {
       // hovering
@@ -37,16 +37,16 @@ export const createMousePicker = (
         value.offHover?.();
       }
     }
-  }
+  };
 
-  function onClick() {
+  const onClick = () => {
     const intersects = getIntersecting();
     for (const name of intersects) {
       if (name in scene.interactables) {
         scene.interactables[name].onClick?.();
       }
     }
-  }
+  };
 
   return {
     onHover,

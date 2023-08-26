@@ -1,9 +1,9 @@
-import { App, createApp } from "./app";
 import { renderScene } from "./view";
-import { initUI } from "./UI";
+import { App, createApp } from "./app";
+import { initializeUserInterface } from "./user-interface";
 
 createApp().then((app: App) => {
-  initUI(app);
+  initializeUserInterface(app);
   app.update();
   renderScene();
 });
