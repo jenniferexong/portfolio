@@ -38,7 +38,7 @@ export const createTrack = (): Track => {
     bunnyGame: createStop("bunnyGame", 3.45),
     split: createStop("split", 4.68),
     ribbleChat: createStop("ribbleChat", 5.3),
-    workExperience: createStop("workExperience", 5.98),
+    workExperience: createStop("workExperience", 6.04),
     education: createStop("education", 6.95),
     contact: createStop("contact", 8.19),
   };
